@@ -10,55 +10,64 @@
 
 package com.sos.os;
 
+import com.sos.bookkeeping.Logger;
+
 public class SimProcess {
-    private final SimProgram base_program;
-    private int cycle_count;
-    private int program_instruction;
-    private int remaining_cycles_on_instr;
+    private final SimProgram baseProgram;
+    private int cycleCount;
+    private int programInstruction;
+    private int remainingCyclesOnInstr;
     private SimProcessState state;
 
     public SimProcess(SimProgram base_program){
-        this.base_program = base_program;
-        cycle_count = 0;
-        program_instruction = 0;
-        remaining_cycles_on_instr = this.base_program.get_instr(program_instruction).get_cycle_count();
+        this.baseProgram = base_program;
+        cycleCount = 0;
+        programInstruction = 0;
+        remainingCyclesOnInstr = this.baseProgram.get_instr(programInstruction).get_cycle_count();
         state = SimProcessState.WAITING;
     }
 
     public int run_cycles(int cycles){
-        if(state == SimProcessState.WAITING || state == SimProcessState.COMPLETE)return 0;
+        if(state == SimProcessState.WAITING || state == SimProcessState.COMPLETE){
+            Logger.getInstance().log("Attempted to run a WAITING or COMPLETE process.");
+            return 0;
+        }
+        if(state == SimProcessState.RESOURCE_HOLD){
+            Logger.getInstance().log("Attempted to run a RESOURCE_HOLD process.");
+            return 0;
+        }
         for(int i = 0;i < cycles;i++) {
-            remaining_cycles_on_instr -= 1;
-            cycle_count += 1;
+            remainingCyclesOnInstr -= 1;
+            cycleCount += 1;
             //Move to next instructions
-            if (remaining_cycles_on_instr <= 0) {
-                program_instruction = base_program.get_instr(program_instruction).get_next_instr();
-                if(!base_program.valid_instr(program_instruction)){
+            if (remainingCyclesOnInstr <= 0) {
+                programInstruction = baseProgram.get_instr(programInstruction).get_next_instr();
+                if(!baseProgram.valid_instr(programInstruction)){
                     state = SimProcessState.COMPLETE;
                     return i;
                 }
-                remaining_cycles_on_instr = base_program.get_instr(program_instruction).get_cycle_count();
+                remainingCyclesOnInstr = baseProgram.get_instr(programInstruction).get_cycle_count();
             }
         }
         return cycles;
     }
 
-    public int[] get_needed_memory_addr(){
+    public int[] getNeededMemoryAddr(){
         if(state == SimProcessState.WAITING || state == SimProcessState.COMPLETE)return null;
         int[] result = new int[1];
-        result[0] = base_program.get_instr(program_instruction).get_instr_addr();
+        result[0] = baseProgram.get_instr(programInstruction).get_instr_addr();
         return result;
     }
 
-    public void set_state(SimProcessState new_state){
+    public void setState(SimProcessState new_state){
         state = new_state;
     }
 
-    public int completion_time(){
-        return (base_program.completion_time() - cycle_count);
+    public int completionTime(){
+        return (baseProgram.completion_time() - cycleCount);
     }
 
-    public SimProcessState get_state(){
+    public SimProcessState getState(){
         return state;
     }
 }

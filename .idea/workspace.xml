@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Basic structure done.">
-      <change afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Dumb management stuff">
+      <change afterPath="$PROJECT_DIR$/src/com/sos/os/AccessManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/MemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/MemoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/ProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/ProcessScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +23,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -51,6 +59,14 @@
       <option name="presentableId" value="Default" />
       <updated>1692061986542</updated>
     </task>
+    <task id="LOCAL-00001" summary="Dumb management stuff">
+      <created>1692551102734</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1692551102734</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -63,5 +79,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Dumb management stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="Dumb management stuff" />
   </component>
 </project>

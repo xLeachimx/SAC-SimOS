@@ -15,12 +15,12 @@ import java.util.Random;
 
 public class SimProgram {
     private static final Random rng = new Random();
-    private static final int instr_size = 4;
-    private static final int min_size = 100;
-    private static final int max_size = 1024;
-    private static final int jump_chance = 5;
-    private int code_space;
-    private int variable_space;
+    private static final int instrSize = 4;
+    private static final int minSize = 100;
+    private static final int maxSize = 1024;
+    private static final int jumpChance = 5;
+    private int codeSpace;
+    private int variableSpace;
     private ArrayList<Instruction> code;
 
     public SimProgram(){
@@ -28,20 +28,20 @@ public class SimProgram {
     }
 
     public int total_size(){
-        return (instr_size * code_space) + variable_space;
+        return (instrSize * codeSpace) + variableSpace;
     }
 
-    public Instruction get_instr(int idx){
+    public Instruction getInstr(int idx){
         return code.get(idx);
     }
-    public boolean valid_instr(int idx){
+    public boolean validInstr(int idx){
         return idx >= 0 && idx < code.size();
     }
 
-    public int completion_time(){
+    public int completionTime(){
         int total = 0;
         for(Instruction instr : code){
-            total += instr.cycle_count;
+            total += instr.cycleCount;
         }
         return total;
     }
@@ -51,13 +51,13 @@ public class SimProgram {
     //=========================
     private void generate(){
         //Generate Code
-        code_space = rng.nextInt(min_size, max_size);
+        codeSpace = rng.nextInt(minSize, maxSize);
         //Determine jumps
-        int[] next_instrs = shuffle_instr_jump(code_space);
-        variable_space = rng.nextInt(min_size, 2*max_size);
-        for(int i = 0;i < code_space;i++){
-            int instr_addr = instr_size * i;
-            Instruction temp = new Instruction(instr_addr, next_instrs[i]);
+        int[] nextInstrs = shuffleInstrJump(codeSpace);
+        variableSpace = rng.nextInt(minSize, 2*maxSize);
+        for(int i = 0;i < codeSpace;i++){
+            int instrAddr = instrSize * i;
+            Instruction temp = new Instruction(instrAddr, nextInstrs[i]);
             code.add(temp);
         }
     }
@@ -75,13 +75,13 @@ public class SimProgram {
         return result
      */
 
-    private int[] shuffle_instr_jump(int n){
+    private int[] shuffleInstrJump(int n){
         int[] idxs = new int[n-1];
         for(int i = 0;i < idxs.length;i++){
             idxs[i] = i+1;
         }
         for(int i = 0;i < idxs.length-1;i++){
-            if(rng.nextInt(100) < jump_chance){
+            if(rng.nextInt(100) < jumpChance){
                 int jump = rng.nextInt(i+1, idxs.length);
                 int temp = idxs[i];
                 idxs[i] = idxs[jump];
@@ -90,10 +90,10 @@ public class SimProgram {
         }
         int[] result = new int[n];
         Arrays.fill(result, -1);
-        int last_idx = 0;
+        int lastIdx = 0;
         for (int idx : idxs) {
-            result[last_idx] = idx;
-            last_idx = idx;
+            result[lastIdx] = idx;
+            lastIdx = idx;
         }
         for(int i = 0;i < result.length;i++){
             if(result[i] == -1){
@@ -105,26 +105,26 @@ public class SimProgram {
     }
 
     public class Instruction{
-        private int instr_addr;
-        private int next_instr;
-        private int cycle_count;
+        private int instrAddr;
+        private int nextInstr;
+        private int cycleCount;
 
-        public Instruction(int instr_addr, int next_instr){
-            this.instr_addr = instr_addr;
-            this.next_instr = next_instr;
-            cycle_count = rng.nextInt(32) + 1;
+        public Instruction(int instrAddr, int nextInstr){
+            this.instrAddr = instrAddr;
+            this.nextInstr = nextInstr;
+            cycleCount = rng.nextInt(32) + 1;
         }
 
-        public int get_instr_addr(){
-            return instr_addr;
+        public int getInstrAddr(){
+            return instrAddr;
         }
 
-        public int get_next_instr(){
-            return next_instr;
+        public int getNextInstr(){
+            return nextInstr;
         }
 
-        public int get_cycle_count(){
-            return cycle_count;
+        public int getCycleCount(){
+            return cycleCount;
         }
     }
 

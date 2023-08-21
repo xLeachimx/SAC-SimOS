@@ -9,6 +9,7 @@
 
 package com.sos.hardware;
 
+import com.sos.bookkeeping.Logger;
 import com.sos.os.SimProcess;
 
 public class SimCPU {
@@ -26,7 +27,9 @@ public class SimCPU {
         this.burst_amount = burst_amount;
     }
 
-    public void run_burst(SimProcess proc){
+    public void run_burst(SimProcess proc, int pid){
+        int cycles = proc.run_cycles(burst_amount);
+        Logger.getInstance().log(String.format("Ran %d cycles on process %d.", cycles, pid));
         cycle_count += proc.run_cycles(burst_amount);
     }
 }

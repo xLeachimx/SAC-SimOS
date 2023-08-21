@@ -9,6 +9,7 @@
 
 package com.sos.os;
 
+import com.sos.bookkeeping.Logger;
 import com.sos.hardware.SimCPU;
 import com.sos.hardware.SimRAM;
 
@@ -20,46 +21,52 @@ public class SimOS {
     //Constants
     private final Random rng = new Random();
     //Class variables
-    private static int next_pid = 0;
+    private static int nextPid = 0;
 
     //Instance variables
-    private final HashMap<Integer, SimProcess> process_map;
+    private final HashMap<Integer, SimProcess> processMap;
     private final ProcessScheduler scheduler;
-    private final MemoryManager memory_manager;
+    private final MemoryManager memoryManager;
     private final SimCPU cpu;
     private final SimRAM ram;
 
-    public SimOS(ProcessScheduler scheduler, MemoryManager memory_manager){
-        process_map = new HashMap<>();
+    public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager){
+        processMap = new HashMap<>();
         this.scheduler = scheduler;
-        this.memory_manager = memory_manager;
+        this.memoryManager = memoryManager;
         cpu = new SimCPU();
         ram = new SimRAM();
     }
 
     public void add_process(SimProcess process){
-        int pid = next_pid++;
+        int pid = nextPid++;
         int priority = rng.nextInt(7);
-        process_map.put(pid, process);
-        scheduler.add_process(new SimProcessInfo(process,pid, priority));
+        processMap.put(pid, process);
+        Logger.getInstance().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
+        scheduler.addProcess(new SimProcessInfo(process,pid, priority));
     }
 
     public void run_step(){
-        int process = scheduler.get_next_process();
-        if(process == -1)return;
-        SimProcess current = process_map.get(process);
-        int[] mem_req = current.get_needed_memory_addr();
-        for(int addr : mem_req) {
-            memory_manager.request_memory(process, addr, ram);
+        int process = scheduler.getNextProcess();
+        if(process == -1){
+            Logger.getInstance().log("No active process. Idling.");
+            return;
         }
-        cpu.run_burst(process_map.get(process));
+        SimProcess current = processMap.get(process);
+        Logger.getInstance().log(String.format("Running burst on process %d.", process));
+        int[] mem_req = current.getNeededMemoryAddr();
+        for(int addr : mem_req) {
+            memoryManager.requestMemory(process, addr, ram);
+        }
+        cpu.run_burst(processMap.get(process), process);
+        collect_garbage();
     }
 
     public void collect_garbage(){
         ArrayList<Integer> removals = new ArrayList<>();
-        for(Integer key : process_map.keySet()){
-            if(process_map.get(key).get_state() == SimProcessState.COMPLETE) removals.add(key);
+        for(Integer key : processMap.keySet()){
+            if(processMap.get(key).get_state() == SimProcessState.COMPLETE) removals.add(key);
         }
-        for(Integer key : removals) process_map.remove(key);
+        for(Integer key : removals) processMap.remove(key);
     }
 }

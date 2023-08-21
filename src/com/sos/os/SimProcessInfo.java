@@ -14,7 +14,7 @@ import java.util.Random;
 public class SimProcessInfo {
     private static final Random rng = new Random();
     private final SimProcess process;
-    private int est_comp_time;
+    private int estCompTime;
     private final int pid;
     private final int priority;
 
@@ -22,32 +22,32 @@ public class SimProcessInfo {
         this.process = process;
         this.pid = pid;
         this.priority = priority;
-        calculate_completion_time();
+        calculateCompletionTime();
     }
 
-    public int get_est_comp_time(){
-        return est_comp_time;
+    public int getEstCompTime(){
+        return estCompTime;
     }
 
-    public int get_pid(){
+    public int getPid(){
         return pid;
     }
 
-    public int get_priority(){
+    public int getPriority(){
         return priority;
     }
 
-    public SimProcessState get_state(){
-        return process.get_state();
+    public SimProcessState getState(){
+        return process.getState();
     }
 
     public void set_state(SimProcessState state){
-        process.set_state(state);
+        process.setState(state);
     }
 
-    public int calculate_completion_time(){
+    public int calculateCompletionTime(){
         double error = 1.0 + ((0.2 * rng.nextDouble()) - 0.4);
-        est_comp_time = (int)(error * process.completion_time());
-        return est_comp_time;
+        estCompTime = (int)(error * process.completionTime());
+        return estCompTime;
     }
 }

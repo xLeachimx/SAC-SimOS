@@ -20,12 +20,12 @@ public class BasicProcessScheduler implements ProcessScheduler{
 
 
     @Override
-    public void add_process(SimProcessInfo process) {
+    public void addProcess(SimProcessInfo process) {
         process_queue.add(process);
     }
 
     @Override
-    public int get_next_process() {
+    public int getNextProcess() {
         while(process_queue.size() > 0 && process_queue.get(0).get_state() == SimProcessState.COMPLETE){
             process_queue.remove(0);
         }
