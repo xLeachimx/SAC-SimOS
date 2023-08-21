@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class SimOS {
+    private static final int GC_FREQ = 20;
     //Constants
     private final Random rng = new Random();
     //Class variables
@@ -29,6 +30,7 @@ public class SimOS {
     private final MemoryManager memoryManager;
     private final SimCPU cpu;
     private final SimRAM ram;
+    private int stepCounter;
 
     public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager){
         processMap = new HashMap<>();
@@ -36,6 +38,7 @@ public class SimOS {
         this.memoryManager = memoryManager;
         cpu = new SimCPU();
         ram = new SimRAM();
+        stepCounter = 0;
     }
 
     public void add_process(SimProcess process){
@@ -54,18 +57,26 @@ public class SimOS {
         }
         SimProcess current = processMap.get(process);
         Logger.getInstance().log(String.format("Running burst on process %d.", process));
-        int[] mem_req = current.getNeededMemoryAddr();
-        for(int addr : mem_req) {
-            memoryManager.requestMemory(process, addr, ram);
+        SimInstruction instruction = current.getCurrentInstruction();
+        memoryManager.requestMemory(process, instruction.getInstructionAddress(), ram);
+        if(instruction.isMemoryInstruction())
+            memoryManager.requestMemory(process, instruction.getMemoryAccess(), ram);
+        if(current.getState() != SimProcessState.RESOURCE_HOLD)
+            cpu.run_burst(processMap.get(process), process);
+        stepCounter += 1;
+        if(stepCounter%GC_FREQ == 0) {
+            stepCounter = 0;
+            collect_garbage();
         }
-        cpu.run_burst(processMap.get(process), process);
-        collect_garbage();
     }
 
     public void collect_garbage(){
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
-            if(processMap.get(key).get_state() == SimProcessState.COMPLETE) removals.add(key);
+            if(processMap.get(key).getState() == SimProcessState.COMPLETE){
+                Logger.getInstance().log(String.format("Process %d complete and removed from system.", key));
+                removals.add(key);
+            }
         }
         for(Integer key : removals) processMap.remove(key);
     }

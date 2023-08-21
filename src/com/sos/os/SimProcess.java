@@ -23,7 +23,7 @@ public class SimProcess {
         this.baseProgram = base_program;
         cycleCount = 0;
         programInstruction = 0;
-        remainingCyclesOnInstr = this.baseProgram.get_instr(programInstruction).get_cycle_count();
+        remainingCyclesOnInstr = this.baseProgram.getInstr(programInstruction).getCycleCount();
         state = SimProcessState.WAITING;
     }
 
@@ -41,22 +41,20 @@ public class SimProcess {
             cycleCount += 1;
             //Move to next instructions
             if (remainingCyclesOnInstr <= 0) {
-                programInstruction = baseProgram.get_instr(programInstruction).get_next_instr();
-                if(!baseProgram.valid_instr(programInstruction)){
+                programInstruction = baseProgram.getInstr(programInstruction).getNextInstructionIndex();
+                if(!baseProgram.validInstr(programInstruction)){
                     state = SimProcessState.COMPLETE;
                     return i;
                 }
-                remainingCyclesOnInstr = baseProgram.get_instr(programInstruction).get_cycle_count();
+                remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
             }
         }
         return cycles;
     }
 
-    public int[] getNeededMemoryAddr(){
-        if(state == SimProcessState.WAITING || state == SimProcessState.COMPLETE)return null;
-        int[] result = new int[1];
-        result[0] = baseProgram.get_instr(programInstruction).get_instr_addr();
-        return result;
+    public SimInstruction getCurrentInstruction(){
+        if(!baseProgram.validInstr(programInstruction))return null;
+        return baseProgram.getInstr(programInstruction);
     }
 
     public void setState(SimProcessState new_state){
@@ -64,7 +62,7 @@ public class SimProcess {
     }
 
     public int completionTime(){
-        return (baseProgram.completion_time() - cycleCount);
+        return (baseProgram.completionTime() - cycleCount);
     }
 
     public SimProcessState getState(){

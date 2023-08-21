@@ -9,6 +9,10 @@
 
 package com.sos.os;
 
+import com.sos.os.instructions.MemoryInstruction;
+import com.sos.os.instructions.OperationInstruction;
+import com.sos.os.instructions.ResourceInstruction;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -21,7 +25,7 @@ public class SimProgram {
     private static final int jumpChance = 5;
     private int codeSpace;
     private int variableSpace;
-    private ArrayList<Instruction> code;
+    private ArrayList<SimInstruction> code;
 
     public SimProgram(){
         generate();
@@ -31,7 +35,7 @@ public class SimProgram {
         return (instrSize * codeSpace) + variableSpace;
     }
 
-    public Instruction getInstr(int idx){
+    public SimInstruction getInstr(int idx){
         return code.get(idx);
     }
     public boolean validInstr(int idx){
@@ -40,8 +44,8 @@ public class SimProgram {
 
     public int completionTime(){
         int total = 0;
-        for(Instruction instr : code){
-            total += instr.cycleCount;
+        for(SimInstruction instr : code){
+            total += instr.getCycleCount();
         }
         return total;
     }
@@ -55,9 +59,41 @@ public class SimProgram {
         //Determine jumps
         int[] nextInstrs = shuffleInstrJump(codeSpace);
         variableSpace = rng.nextInt(minSize, 2*maxSize);
+        int last_variable = 0;
         for(int i = 0;i < codeSpace;i++){
             int instrAddr = instrSize * i;
-            Instruction temp = new Instruction(instrAddr, nextInstrs[i]);
+            //Randomly determine instruction type.
+            int roll = rng.nextInt(100);
+            SimInstruction temp;
+            if(roll < 70){
+                //Simple operation instruction (~70%)
+                temp = new OperationInstruction(instrAddr, nextInstrs[i]);
+            }
+            else if(roll < 90){
+                //Memory operation instruction (~20%)
+                int memoryRoll = rng.nextInt(100);
+                int address;
+                if(memoryRoll < 40){
+                    //Memory access is near last access (~40%, spatial locality)
+                    address = last_variable + (rng.nextInt(10) - 5);
+                    address = Math.max(0, Math.min(address, variableSpace-1));
+                }
+                else if(memoryRoll < 60){
+                    //Memory access is the same as last access (~20%, temporal locality)
+                    address = last_variable;
+                }
+                else{
+                    //Memory access is somewhere random (~40%, no locality)
+                    address = rng.nextInt(variableSpace);
+                }
+                last_variable = address;
+                temp = new MemoryInstruction(instrAddr, nextInstrs[i], address);
+            }
+            else{
+                //Resource allocation instruction (~10%)
+                int resource = rng.nextInt(5);
+                temp = new ResourceInstruction(instrAddr, nextInstrs[i], resource);
+            }
             code.add(temp);
         }
     }
@@ -103,29 +139,4 @@ public class SimProgram {
         }
         return result;
     }
-
-    public class Instruction{
-        private int instrAddr;
-        private int nextInstr;
-        private int cycleCount;
-
-        public Instruction(int instrAddr, int nextInstr){
-            this.instrAddr = instrAddr;
-            this.nextInstr = nextInstr;
-            cycleCount = rng.nextInt(32) + 1;
-        }
-
-        public int getInstrAddr(){
-            return instrAddr;
-        }
-
-        public int getNextInstr(){
-            return nextInstr;
-        }
-
-        public int getCycleCount(){
-            return cycleCount;
-        }
-    }
-
 }

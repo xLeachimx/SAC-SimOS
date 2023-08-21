@@ -20,15 +20,15 @@ public class BasicMemoryManager implements MemoryManager{
     }
     @Override
     public void requestMemory(int pid, int addr, SimRAM ram) {
-        int page = addr / ram.get_page_size();
-        for(int i = 0;i < ram.num_pages();i++) {
+        int page = addr / ram.getPageSize();
+        for(int i = 0;i < ram.numPages();i++) {
             //Page already in memory
-            if(page == ram.get_process_page(page))return;
+            if(page == ram.getProcessPage(page))return;
         }
         Logger.getInstance().log(String.format("Page fault for process %d page %d.", pid, page));
         int free = ram.nextFree();
         if(free == -1){
-            free = rng.nextInt(ram.num_pages());
+            free = rng.nextInt(ram.numPages());
             Logger.getInstance().log(String.format("No free page. Deallocating page %d in RAM.", free));
             ram.free(free);
         }

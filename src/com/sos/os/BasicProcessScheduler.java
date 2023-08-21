@@ -26,10 +26,10 @@ public class BasicProcessScheduler implements ProcessScheduler{
 
     @Override
     public int getNextProcess() {
-        while(process_queue.size() > 0 && process_queue.get(0).get_state() == SimProcessState.COMPLETE){
+        while(process_queue.size() > 0 && process_queue.get(0).getState() == SimProcessState.COMPLETE){
             process_queue.remove(0);
         }
         if(process_queue.size() == 0)return -1;
-        return process_queue.get(0).get_pid();
+        return process_queue.get(0).getPid();
     }
 }
