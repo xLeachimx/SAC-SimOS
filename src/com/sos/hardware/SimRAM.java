@@ -11,27 +11,27 @@ package com.sos.hardware;
 
 public class SimRAM {
     //Constants
-    private static final int default_size = 30*1024; //30KB default ram
-    private static final int default_page_size = 1024; //1KB pages
+    private static final int defaultSize = 30*1024; //30KB default ram
+    private static final int defaultPageSize = 1024; //1KB pages
 
     //Instance Variables
     private int size;
-    private int page_size;
+    private int pageSize;
     private PageInfo[] pages;
 
     public SimRAM(){
-        size = default_size;
-        page_size = default_page_size;
-        pages = new PageInfo[size/page_size];
+        size = defaultSize;
+        pageSize = defaultPageSize;
+        pages = new PageInfo[size/pageSize];
         for(int i = 0;i < pages.length;i++){
             pages[i] = new PageInfo();
         }
     }
 
     public SimRAM(int page_size){
-        size = default_size;
-        this.page_size = page_size;
-        pages = new PageInfo[size/this.page_size];
+        size = defaultSize;
+        this.pageSize = page_size;
+        pages = new PageInfo[size/this.pageSize];
         for(int i = 0;i < pages.length;i++){
             pages[i] = new PageInfo();
         }
@@ -39,14 +39,14 @@ public class SimRAM {
 
     public SimRAM(int size, int page_size){
         this.size = size;
-        this.page_size = page_size;
-        pages = new PageInfo[this.size/this.page_size];
+        this.pageSize = page_size;
+        pages = new PageInfo[this.size/this.pageSize];
         for(int i = 0;i < pages.length;i++){
             pages[i] = new PageInfo();
         }
     }
 
-    public int num_pages(){
+    public int numPages(){
         return pages.length;
     }
 
@@ -57,11 +57,11 @@ public class SimRAM {
         return -1;
     }
 
-    public boolean allocate(int page, int pid, int process_page){
+    public boolean allocate(int page, int pid, int processPage){
         if(page < 0 || page >= pages.length)return false;
         if(pages[page].allocated)return false;
         pages[page].pid = pid;
-        pages[page].process_page = process_page;
+        pages[page].processPage = processPage;
         pages[page].allocated = true;
         return true;
     }
@@ -72,36 +72,36 @@ public class SimRAM {
         return true;
     }
 
-    public void process_clear(int pid){
+    public void processClear(int pid){
         for(PageInfo page : pages){
             if(page.pid == pid)page.allocated = false;
         }
     }
 
-    public int get_page_pid(int page){
+    public int getPagePid(int page){
         if(page < 0 || page >= pages.length)return -1;
         return pages[page].pid;
     }
 
-    public int get_process_page(int page){
+    public int getProcessPage(int page){
         if(page < 0 || page >= pages.length)return -1;
-        return pages[page].process_page;
+        return pages[page].processPage;
     }
 
-    public int get_page_size(){
-        return page_size;
+    public int getPageSize(){
+        return pageSize;
     }
 
-    public boolean retrieve(int pid, int process_page){
+    public boolean retrieve(int pid, int processPage){
         for(PageInfo page : pages){
-            if(page.pid == pid && page.process_page == process_page)return true;
+            if(page.pid == pid && page.processPage == processPage)return true;
         }
         return false;
     }
 
-    public boolean write_to(int pid, int process_page){
+    public boolean writeTo(int pid, int processPage){
         for(PageInfo page : pages){
-            if(page.pid == pid && page.process_page == process_page){
+            if(page.pid == pid && page.processPage == processPage){
                 page.written = true;
                 return true;
             }
@@ -111,13 +111,13 @@ public class SimRAM {
 
     private class PageInfo {
         public int pid;
-        public int process_page;
+        public int processPage;
         public boolean allocated;
         public boolean written;
 
         public PageInfo(){
             pid = -1;
-            process_page = -1;
+            processPage = -1;
             allocated = false;
             written = false;
         }

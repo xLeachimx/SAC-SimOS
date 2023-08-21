@@ -14,22 +14,22 @@ import com.sos.os.SimProcess;
 
 public class SimCPU {
     //Instance variables
-    private int cycle_count;
-    private final int burst_amount;
+    private int cycleCount;
+    private final int burstAmount;
 
     public SimCPU(){
-        cycle_count = 0;
-        burst_amount = 10;
+        cycleCount = 0;
+        burstAmount = 10;
     }
 
-    public SimCPU(int burst_amount){
-        cycle_count = 0;
-        this.burst_amount = burst_amount;
+    public SimCPU(int burstAmount){
+        cycleCount = 0;
+        this.burstAmount = burstAmount;
     }
 
     public void run_burst(SimProcess proc, int pid){
-        int cycles = proc.run_cycles(burst_amount);
+        int cycles = proc.run_cycles(burstAmount);
         Logger.getInstance().log(String.format("Ran %d cycles on process %d.", cycles, pid));
-        cycle_count += proc.run_cycles(burst_amount);
+        cycleCount += proc.run_cycles(burstAmount);
     }
 }
