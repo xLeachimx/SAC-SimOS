@@ -69,47 +69,55 @@ public class SimProgram {
                 //Simple operation instruction (~70%)
                 temp = new OperationInstruction(instrAddr, nextInstrs[i]);
             }
-            else if(roll < 90){
-                //Memory operation instruction (~20%)
+            else {
+                //Memory operation instruction (~30%)
                 int memoryRoll = rng.nextInt(100);
                 int address;
-                if(memoryRoll < 40){
+                if (memoryRoll < 40) {
                     //Memory access is near last access (~40%, spatial locality)
                     address = last_variable + (rng.nextInt(10) - 5);
-                    address = Math.max(0, Math.min(address, variableSpace-1));
-                }
-                else if(memoryRoll < 60){
+                    address = Math.max(0, Math.min(address, variableSpace - 1));
+                } else if (memoryRoll < 60) {
                     //Memory access is the same as last access (~20%, temporal locality)
                     address = last_variable;
-                }
-                else{
+                } else {
                     //Memory access is somewhere random (~40%, no locality)
                     address = rng.nextInt(variableSpace);
                 }
                 last_variable = address;
                 temp = new MemoryInstruction(instrAddr, nextInstrs[i], address);
             }
-            else{
-                //Resource allocation instruction (~10%)
-                int resource = rng.nextInt(5);
-                temp = new ResourceInstruction(instrAddr, nextInstrs[i], resource);
-            }
             code.add(temp);
         }
+        //Follow code and make Resource usage instructions (10% conversion rate)
+        int instr = 0;
+        boolean resource_held = false;
+        int resource = 0;
+        ResourceInstruction temp;
+        while(instr < code.size()){
+            int next_instr = code.get(instr).getNextInstructionIndex();
+            if(next_instr == code.size() && resource_held){
+                SimInstruction original = code.get(instr);
+                temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), -resource);
+                code.set(instr, temp);
+                break;
+            }
+            int roll = rng.nextInt(100);
+            if(roll <= 10){
+                SimInstruction original = code.get(instr);
+                if(resource_held){
+                    temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), -resource);
+                    resource_held = false;
+                }
+                else{
+                    resource = rng.nextInt(5) + 1;
+                    temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), resource);
+                    resource_held = true;
+                }
+            }
+            instr = next_instr;
+        }
     }
-
-    /* Python version of index shuffling (no locality)
-    def shuffle_instr_easy(n):
-        idxs = [i+1 for i in range(n-1)]
-        shuffle(idxs)
-        result = [-1 for i in range(n)]
-        last_idx = 0
-        for idx in idxs:
-            result[last_idx] = idx
-            last_idx = idx
-        result[result.index(-1)] = n
-        return result
-     */
 
     private int[] shuffleInstrJump(int n){
         int[] idxs = new int[n-1];

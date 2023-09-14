@@ -27,9 +27,9 @@ public class SimCPU {
         this.burstAmount = burstAmount;
     }
 
-    public void run_burst(SimProcess proc, int pid){
-        int cycles = proc.run_cycles(burstAmount);
+    public void run_burst(SimProcess process, int pid){
+        int cycles = process.run_cycles(burstAmount);
         Logger.getInstance().log(String.format("Ran %d cycles on process %d.", cycles, pid));
-        cycleCount += proc.run_cycles(burstAmount);
+        cycleCount += cycles;
     }
 }

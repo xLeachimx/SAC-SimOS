@@ -6,6 +6,7 @@
  *
  */
 
+//TODO: Add in error checking (memory, resource, etc)
 
 package com.sos.os;
 
@@ -28,14 +29,19 @@ public class SimOS {
     private final HashMap<Integer, SimProcess> processMap;
     private final ProcessScheduler scheduler;
     private final MemoryManager memoryManager;
+    private final AccessManager accessManager;
     private final SimCPU cpu;
     private final SimRAM ram;
     private int stepCounter;
+    private HashMap<Integer, Integer> resourceMap;
 
-    public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager){
+    public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager, AccessManager accessManager){
         processMap = new HashMap<>();
+        resourceMap = new HashMap<>();
         this.scheduler = scheduler;
         this.memoryManager = memoryManager;
+        this.accessManager = accessManager;
+        for(int i = 1;i <= 5;i++)this.accessManager.addResource(i);
         cpu = new SimCPU();
         ram = new SimRAM();
         stepCounter = 0;
@@ -61,6 +67,45 @@ public class SimOS {
         memoryManager.requestMemory(process, instruction.getInstructionAddress(), ram);
         if(instruction.isMemoryInstruction())
             memoryManager.requestMemory(process, instruction.getMemoryAccess(), ram);
+        else if(instruction.isResourceInstruction()){
+            int resource = Math.abs(instruction.getResourceAccess());
+            if(instruction.getResourceAccess() < 0){
+                accessManager.releaseResource(process, resource);
+                if(resourceMap.containsKey(resource)){
+                    if(resourceMap.get(resource) != process)
+                        Logger.getInstance().log(
+                                String.format("Process %d attempted to release resource %d claimed by process %d.",
+                                        process, resource, resourceMap.get(resource)));
+                    resourceMap.remove(resource);
+                }
+                else{
+                    Logger.getInstance().log(String.format("Process %d attempted release unclaimed resource %d",
+                            process, resource));
+                }
+            }
+            else{
+                if(!accessManager.requestResource(process, resource)){
+                    current.setState(SimProcessState.RESOURCE_HOLD);
+                    Logger.getInstance().log(String.format("Process %d held after requesting resource %d.",
+                            process, resource));
+                }
+                else{
+                    current.setState(SimProcessState.ACTIVE);
+                    Logger.getInstance().log(String.format("Process %d claimed resource %d.",
+                            process, resource));
+                    if(!resourceMap.containsKey(resource)){
+                        resourceMap.put(resource, process);
+                    }
+                    else if(resourceMap.get(resource) != process){
+                        Logger.getInstance().log(String.format("Process %d claimed resource %d held by process %d.",
+                            process, resource, resourceMap.get(resource)));
+                    }
+                }
+            }
+        }
+        if(current.getState() == SimProcessState.WAITING){
+            Logger.getInstance().log(String.format("Waiting process %d given CPU burst.", process));
+        }
         if(current.getState() != SimProcessState.RESOURCE_HOLD)
             cpu.run_burst(processMap.get(process), process);
         stepCounter += 1;
@@ -68,6 +113,10 @@ public class SimOS {
             stepCounter = 0;
             collect_garbage();
         }
+    }
+
+    public boolean idle(){
+        return (processMap.size() == 0);
     }
 
     public void collect_garbage(){
