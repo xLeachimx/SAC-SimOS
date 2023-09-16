@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Updated instructions to be more varied.">
-      <change afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" afterDir="false" />
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Basic Manager and better resource instruction generation.">
+      <change afterPath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessState.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +86,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692650644587</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Basic Manager and better resource instruction generation.">
+      <created>1694655128009</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1694655128009</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -101,6 +112,7 @@
     <MESSAGE value="Snake to Camel Conversion" />
     <MESSAGE value="More Snake to Camel Conversion" />
     <MESSAGE value="Updated instructions to be more varied." />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated instructions to be more varied." />
+    <MESSAGE value="Basic Manager and better resource instruction generation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic Manager and better resource instruction generation." />
   </component>
 </project>

@@ -33,7 +33,7 @@ public class SimOS {
     private final SimCPU cpu;
     private final SimRAM ram;
     private int stepCounter;
-    private HashMap<Integer, Integer> resourceMap;
+    private HashMap<Integer, SimResource> resourceMap;
 
     public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager, AccessManager accessManager){
         processMap = new HashMap<>();
@@ -41,7 +41,11 @@ public class SimOS {
         this.scheduler = scheduler;
         this.memoryManager = memoryManager;
         this.accessManager = accessManager;
-        for(int i = 1;i <= 5;i++)this.accessManager.addResource(i);
+        for(int i = 0;i < 5;i++){
+            SimResource temp = new SimResource();
+            this.resourceMap.put(temp.getID(), temp);
+            this.accessManager.addResource(i);
+        }
         cpu = new SimCPU();
         ram = new SimRAM();
         stepCounter = 0;
@@ -51,63 +55,50 @@ public class SimOS {
         int pid = nextPid++;
         int priority = rng.nextInt(7);
         processMap.put(pid, process);
-        Logger.getInstance().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
+        Logger.getLog().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
         scheduler.addProcess(new SimProcessInfo(process,pid, priority));
     }
 
     public void run_step(){
         int process = scheduler.getNextProcess();
         if(process == -1){
-            Logger.getInstance().log("No active process. Idling.");
+            Logger.getLog().log("No active process. Idling.");
             return;
         }
         SimProcess current = processMap.get(process);
-        Logger.getInstance().log(String.format("Running burst on process %d.", process));
+        if(current.getState() == SimProcessState.WAITING){
+            Logger.getLog().log(String.format("Burst attempted on process %d, which is waiting.", process));
+            return;
+        }
+        if(current.getState() == SimProcessState.TERMINATED){
+            Logger.getLog().log(String.format("Burst attempted on process %d, which is terminated.", process));
+            return;
+        }
+        if(current.getState() == SimProcessState.READY)current.setState(SimProcessState.RUNNING);
+        Logger.getLog().log(String.format("Running burst on process %d.", process));
         SimInstruction instruction = current.getCurrentInstruction();
         memoryManager.requestMemory(process, instruction.getInstructionAddress(), ram);
         if(instruction.isMemoryInstruction())
             memoryManager.requestMemory(process, instruction.getMemoryAccess(), ram);
-        else if(instruction.isResourceInstruction()){
-            int resource = Math.abs(instruction.getResourceAccess());
-            if(instruction.getResourceAccess() < 0){
-                accessManager.releaseResource(process, resource);
-                if(resourceMap.containsKey(resource)){
-                    if(resourceMap.get(resource) != process)
-                        Logger.getInstance().log(
-                                String.format("Process %d attempted to release resource %d claimed by process %d.",
-                                        process, resource, resourceMap.get(resource)));
-                    resourceMap.remove(resource);
-                }
-                else{
-                    Logger.getInstance().log(String.format("Process %d attempted release unclaimed resource %d",
-                            process, resource));
-                }
-            }
-            else{
-                if(!accessManager.requestResource(process, resource)){
-                    current.setState(SimProcessState.RESOURCE_HOLD);
-                    Logger.getInstance().log(String.format("Process %d held after requesting resource %d.",
-                            process, resource));
-                }
-                else{
-                    current.setState(SimProcessState.ACTIVE);
-                    Logger.getInstance().log(String.format("Process %d claimed resource %d.",
-                            process, resource));
-                    if(!resourceMap.containsKey(resource)){
-                        resourceMap.put(resource, process);
-                    }
-                    else if(resourceMap.get(resource) != process){
-                        Logger.getInstance().log(String.format("Process %d claimed resource %d held by process %d.",
-                            process, resource, resourceMap.get(resource)));
-                    }
+        else if(instruction.isResourceInstruction()) {
+            int resourceID = Math.abs(instruction.getResourceAccess());
+            SimResource resource = resourceMap.get(resourceID);
+            if (instruction.getResourceAccess() < 0) {
+                accessManager.releaseResource(process, resourceID);
+                resource.releaseControl(process);
+            } else {
+                boolean result = accessManager.requestResource(process, resourceID);
+                if (result) {
+                    resource.addController(process);
+                } else if (!resource.hasControl(process)) {
+                    current.setState(SimProcessState.WAITING);
+                    Logger.getLog().log(String.format("Process %d held after requesting resource %d.",
+                            process, resourceID));
                 }
             }
         }
-        if(current.getState() == SimProcessState.WAITING){
-            Logger.getInstance().log(String.format("Waiting process %d given CPU burst.", process));
-        }
-        if(current.getState() != SimProcessState.RESOURCE_HOLD)
-            cpu.run_burst(processMap.get(process), process);
+        if(current.getState() == SimProcessState.WAITING) return;
+        cpu.run_burst(processMap.get(process), process);
         stepCounter += 1;
         if(stepCounter%GC_FREQ == 0) {
             stepCounter = 0;
@@ -122,8 +113,8 @@ public class SimOS {
     public void collect_garbage(){
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
-            if(processMap.get(key).getState() == SimProcessState.COMPLETE){
-                Logger.getInstance().log(String.format("Process %d complete and removed from system.", key));
+            if(processMap.get(key).getState() == SimProcessState.TERMINATED){
+                Logger.getLog().log(String.format("Process %d complete and removed from system.", key));
                 removals.add(key);
             }
         }

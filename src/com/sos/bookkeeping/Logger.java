@@ -18,7 +18,7 @@ public class Logger {
     //Singleton Methods/Variables
     private static Logger instance = null;
 
-    public static Logger getInstance(){
+    public static Logger getLog(){
         if(instance == null)
             instance = new Logger();
         return instance;

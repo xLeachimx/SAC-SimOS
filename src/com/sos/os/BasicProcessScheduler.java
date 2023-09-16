@@ -26,7 +26,7 @@ public class BasicProcessScheduler implements ProcessScheduler{
 
     @Override
     public int getNextProcess() {
-        while(process_queue.size() > 0 && process_queue.get(0).getState() == SimProcessState.COMPLETE){
+        while(process_queue.size() > 0 && process_queue.get(0).getState() == SimProcessState.TERMINATED){
             process_queue.remove(0);
         }
         if(process_queue.size() == 0)return -1;

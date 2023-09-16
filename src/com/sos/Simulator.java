@@ -9,5 +9,11 @@
 
 package com.sos;
 
+import com.sos.bookkeeping.Logger;
+
 public class Simulator {
+    public static void main(String[] args) {
+        Logger.getLog();
+        Logger.destroy();
+    }
 }

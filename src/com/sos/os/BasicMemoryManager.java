@@ -25,11 +25,11 @@ public class BasicMemoryManager implements MemoryManager{
             //Page already in memory
             if(page == ram.getProcessPage(page))return;
         }
-        Logger.getInstance().log(String.format("Page fault for process %d page %d.", pid, page));
+        Logger.getLog().log(String.format("Page fault for process %d page %d.", pid, page));
         int free = ram.nextFree();
         if(free == -1){
             free = rng.nextInt(ram.numPages());
-            Logger.getInstance().log(String.format("No free page. Deallocating page %d in RAM.", free));
+            Logger.getLog().log(String.format("No free page. Deallocating page %d in RAM.", free));
             ram.free(free);
         }
         ram.allocate(free, pid, page);

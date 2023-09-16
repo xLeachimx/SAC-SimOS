@@ -28,12 +28,12 @@ public class SimProcess {
     }
 
     public int run_cycles(int cycles){
-        if(state == SimProcessState.WAITING || state == SimProcessState.COMPLETE){
-            Logger.getInstance().log("Attempted to run a WAITING or COMPLETE process.");
+        if(state == SimProcessState.WAITING || state == SimProcessState.TERMINATED){
+            Logger.getLog().log("Attempted to run a WAITING or COMPLETE process.");
             return 0;
         }
-        if(state == SimProcessState.RESOURCE_HOLD){
-            Logger.getInstance().log("Attempted to run a RESOURCE_HOLD process.");
+        if(state == SimProcessState.WAITING){
+            Logger.getLog().log("Attempted to run a RESOURCE_HOLD process.");
             return 0;
         }
         for(int i = 0;i < cycles;i++) {
@@ -43,7 +43,7 @@ public class SimProcess {
             if (remainingCyclesOnInstr <= 0) {
                 programInstruction = baseProgram.getInstr(programInstruction).getNextInstructionIndex();
                 if(!baseProgram.validInstr(programInstruction)){
-                    state = SimProcessState.COMPLETE;
+                    state = SimProcessState.TERMINATED;
                     return i;
                 }
                 remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
