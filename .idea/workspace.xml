@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Fixed execution error that skipped some resource instructions.">
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Progress bar and QoL improvements.">
+      <change afterPath="$PROJECT_DIR$/src/com/sos/bookkeeping/Statistics.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,7 +126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694957451631</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Progress bar and QoL improvements.">
+      <created>1694968766681</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1694968766681</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -153,7 +156,8 @@
     <MESSAGE value="Added Simulated Resource class among other QoL changes." />
     <MESSAGE value="Finished and somewhat tested." />
     <MESSAGE value="Fixed execution error that skipped some resource instructions." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed execution error that skipped some resource instructions." />
+    <MESSAGE value="Progress bar and QoL improvements." />
+    <option name="LAST_COMMIT_MESSAGE" value="Progress bar and QoL improvements." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
