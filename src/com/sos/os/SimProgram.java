@@ -97,25 +97,26 @@ public class SimProgram {
         int resource = 0;
         ResourceInstruction temp;
         while(instr < code.size()){
-            int next_instr = code.get(instr).getNextInstructionIndex();
+            SimInstruction original = code.get(instr);
+            int next_instr = original.getNextInstructionIndex();
             if(next_instr == code.size() && resource_held){
-                SimInstruction original = code.get(instr);
                 temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), -resource);
                 code.set(instr, temp);
                 break;
             }
             int roll = CentralRandom.getRNG().nextInt(100);
             if(roll <= 10){
-                SimInstruction original = code.get(instr);
+                int addr = original.getInstructionAddress();
                 if(resource_held){
-                    temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), -resource);
+                    temp = new ResourceInstruction(addr, next_instr, -resource);
                     resource_held = false;
                 }
                 else{
                     resource = CentralRandom.getRNG().nextInt(SimOS.RESOURCES) + 1;
-                    temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), resource);
+                    temp = new ResourceInstruction(addr, next_instr, resource);
                     resource_held = true;
                 }
+                code.set(instr, temp);
             }
             instr = next_instr;
         }

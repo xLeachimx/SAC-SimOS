@@ -12,7 +12,7 @@ package com.sos.os.instructions;
 import com.sos.os.SimInstruction;
 
 public class MemoryInstruction implements SimInstruction {
-    public static final int MEMORY_CYCLES = 3;
+    public static final int MEMORY_CYCLES = 5;
     private final int address;
     private final int next;
     private final int memoryAccess;

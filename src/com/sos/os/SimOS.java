@@ -69,11 +69,11 @@ public class SimOS {
         }
         SimProcess current = processMap.get(process);
         if(current.getState() == SimProcessState.WAITING){
-            Logger.getLog().log(String.format("Burst attempted on process %d, which is waiting.", process));
+            Logger.getLog().error(String.format("Burst attempted on process %d, which is waiting.", process));
             return;
         }
         if(current.getState() == SimProcessState.TERMINATED){
-            Logger.getLog().log(String.format("Burst attempted on process %d, which is terminated.", process));
+            Logger.getLog().error(String.format("Burst attempted on process %d, which is terminated.", process));
             return;
         }
         if(current.getState() == SimProcessState.READY)current.setState(SimProcessState.RUNNING);
@@ -88,7 +88,8 @@ public class SimOS {
             if (instruction.getResourceAccess() < 0) {
                 accessManager.releaseResource(process, resourceID);
                 resource.releaseControl(process);
-            } else {
+            }
+            else {
                 boolean result = accessManager.requestResource(process, resourceID);
                 if (result) {
                     resource.addController(process);

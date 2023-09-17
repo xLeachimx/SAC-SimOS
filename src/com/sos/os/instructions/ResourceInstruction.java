@@ -41,7 +41,7 @@ public class ResourceInstruction implements SimInstruction {
 
     @Override
     public boolean isResourceInstruction() {
-        return false;
+        return true;
     }
 
     @Override

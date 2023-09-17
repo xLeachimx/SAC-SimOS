@@ -30,11 +30,13 @@ public class Logger {
 
     //Instance Methods and Variables
     private final String filename;
+    private final String errorFilename;
 
     private Logger(){
         LocalDateTime current = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
         filename = "os_log_" + current.format(format) + ".log";
+        errorFilename = "os_error_log_" + current.format(format) + ".log";
     }
 
     public void log(String line){
@@ -46,6 +48,19 @@ public class Logger {
         }
         catch(IOException exp){
             System.err.println("Problem with logging file.");
+            exp.printStackTrace(System.err);
+        }
+    }
+
+    public void error(String line){
+        try {
+            FileWriter fout = new FileWriter(errorFilename, true);
+            fout.write(line);
+            fout.write('\n');
+            fout.close();
+        }
+        catch(IOException exp){
+            System.err.println("Problem with error logging file.");
             exp.printStackTrace(System.err);
         }
     }

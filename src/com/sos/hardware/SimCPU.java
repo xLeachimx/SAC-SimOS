@@ -19,7 +19,7 @@ public class SimCPU {
 
     public SimCPU(){
         cycleCount = 0;
-        burstAmount = 10;
+        burstAmount = 20;
     }
 
     public SimCPU(int burstAmount){

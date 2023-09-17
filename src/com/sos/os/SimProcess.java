@@ -29,7 +29,7 @@ public class SimProcess {
 
     public int run_cycles(int cycles){
         if(state == SimProcessState.WAITING || state == SimProcessState.TERMINATED){
-            Logger.getLog().log("Attempted to run a WAITING or COMPLETE process.");
+            Logger.getLog().error("Attempted to run a WAITING or COMPLETE process.");
             return 0;
         }
         for(int i = 0;i < cycles;i++) {
@@ -38,11 +38,11 @@ public class SimProcess {
             //Move to next instructions
             if (remainingCyclesOnInstr <= 0) {
                 programInstruction = baseProgram.getInstr(programInstruction).getNextInstructionIndex();
-                if(!baseProgram.validInstr(programInstruction)){
+                if(!baseProgram.validInstr(programInstruction))
                     state = SimProcessState.TERMINATED;
-                    return i;
-                }
-                remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
+                else
+                    remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
+                return i;
             }
         }
         return cycles;

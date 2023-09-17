@@ -30,7 +30,7 @@ public class SimResource {
             Logger.getLog().log(String.format("Process %d released resource %d.", processID, resourceID));
         }
         else{
-            Logger.getLog().log(String.format("Process %d attempted to release resource %d, which it did not control.",
+            Logger.getLog().error(String.format("Process %d attempted to release resource %d, which it did not control.",
                                                     processID, resourceID));
         }
     }
@@ -41,7 +41,7 @@ public class SimResource {
         }
         controllingProcesses.add(processID);
         if(controllingProcesses.size() > 1){
-            Logger.getLog().log(String.format("%d processes controlling resource %d.", controllingProcesses.size(), resourceID));
+            Logger.getLog().error(String.format("%d processes controlling resource %d.", controllingProcesses.size(), resourceID));
         }
     }
 
