@@ -51,4 +51,8 @@ public class SimUser {
     public boolean finished(){
         return processes == 0;
     }
+
+    public int remainingProcesses() {
+        return processes;
+    }
 }

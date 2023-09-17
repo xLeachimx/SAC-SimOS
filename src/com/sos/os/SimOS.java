@@ -125,4 +125,8 @@ public class SimOS {
             processMap.remove(key);
         }
     }
+
+    public int currentProcesses(){
+        return processMap.size();
+    }
 }

@@ -42,7 +42,7 @@ public class SimProcess {
                     state = SimProcessState.TERMINATED;
                 else
                     remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
-                return i;
+                return (i + 1);
             }
         }
         return cycles;
