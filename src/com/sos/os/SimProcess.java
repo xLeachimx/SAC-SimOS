@@ -24,16 +24,12 @@ public class SimProcess {
         cycleCount = 0;
         programInstruction = 0;
         remainingCyclesOnInstr = this.baseProgram.getInstr(programInstruction).getCycleCount();
-        state = SimProcessState.WAITING;
+        state = SimProcessState.READY;
     }
 
     public int run_cycles(int cycles){
         if(state == SimProcessState.WAITING || state == SimProcessState.TERMINATED){
             Logger.getLog().log("Attempted to run a WAITING or COMPLETE process.");
-            return 0;
-        }
-        if(state == SimProcessState.WAITING){
-            Logger.getLog().log("Attempted to run a RESOURCE_HOLD process.");
             return 0;
         }
         for(int i = 0;i < cycles;i++) {

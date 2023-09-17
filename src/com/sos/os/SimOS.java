@@ -11,6 +11,7 @@
 package com.sos.os;
 
 import com.sos.bookkeeping.Logger;
+import com.sos.generator.CentralRandom;
 import com.sos.hardware.SimCPU;
 import com.sos.hardware.SimRAM;
 
@@ -19,9 +20,9 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class SimOS {
-    private static final int GC_FREQ = 20;
     //Constants
-    private final Random rng = new Random();
+    private static final int GC_FREQ = 20;
+    public static final int RESOURCES = 5;
     //Class variables
     private static int nextPid = 0;
 
@@ -33,7 +34,7 @@ public class SimOS {
     private final SimCPU cpu;
     private final SimRAM ram;
     private int stepCounter;
-    private HashMap<Integer, SimResource> resourceMap;
+    private final HashMap<Integer, SimResource> resourceMap;
 
     public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager, AccessManager accessManager){
         processMap = new HashMap<>();
@@ -41,7 +42,7 @@ public class SimOS {
         this.scheduler = scheduler;
         this.memoryManager = memoryManager;
         this.accessManager = accessManager;
-        for(int i = 0;i < 5;i++){
+        for(int i = 0;i < RESOURCES;i++){
             SimResource temp = new SimResource();
             this.resourceMap.put(temp.getID(), temp);
             this.accessManager.addResource(i);
@@ -53,7 +54,7 @@ public class SimOS {
 
     public void add_process(SimProcess process){
         int pid = nextPid++;
-        int priority = rng.nextInt(7);
+        int priority = CentralRandom.getRNG().nextInt(7);
         processMap.put(pid, process);
         Logger.getLog().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
         scheduler.addProcess(new SimProcessInfo(process,pid, priority));
@@ -62,6 +63,7 @@ public class SimOS {
     public void run_step(){
         int process = scheduler.getNextProcess();
         if(process == -1){
+            collect_garbage();
             Logger.getLog().log("No active process. Idling.");
             return;
         }
@@ -118,6 +120,8 @@ public class SimOS {
                 removals.add(key);
             }
         }
-        for(Integer key : removals) processMap.remove(key);
+        for(Integer key : removals){
+            processMap.remove(key);
+        }
     }
 }

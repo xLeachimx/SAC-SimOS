@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Basic Manager and better resource instruction generation.">
-      <change afterPath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" afterDir="false" />
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Added Simulated Resource class among other QoL changes.">
+      <change afterPath="$PROJECT_DIR$/src/com/sos/generator/CentralRandom.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +46,26 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;fileTemplates&quot;
   }
 }</component>
+  <component name="RunManager">
+    <configuration name="Simulator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.sos.Simulator" />
+      <module name="SAC-SimulatedOS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.sos.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Simulator" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -93,7 +110,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694655128009</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Added Simulated Resource class among other QoL changes.">
+      <created>1694863608734</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1694863608734</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -113,6 +137,7 @@
     <MESSAGE value="More Snake to Camel Conversion" />
     <MESSAGE value="Updated instructions to be more varied." />
     <MESSAGE value="Basic Manager and better resource instruction generation." />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic Manager and better resource instruction generation." />
+    <MESSAGE value="Added Simulated Resource class among other QoL changes." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Simulated Resource class among other QoL changes." />
   </component>
 </project>

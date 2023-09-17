@@ -9,25 +9,27 @@
 
 package com.sos.os;
 
+import com.sos.generator.CentralRandom;
 import com.sos.os.instructions.MemoryInstruction;
 import com.sos.os.instructions.OperationInstruction;
 import com.sos.os.instructions.ResourceInstruction;
+import com.sos.os.SimOS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
 public class SimProgram {
-    private static final Random rng = new Random();
     private static final int instrSize = 4;
     private static final int minSize = 100;
     private static final int maxSize = 1024;
     private static final int jumpChance = 5;
     private int codeSpace;
     private int variableSpace;
-    private ArrayList<SimInstruction> code;
+    private final ArrayList<SimInstruction> code;
 
     public SimProgram(){
+        code = new ArrayList<>();
         generate();
     }
 
@@ -55,15 +57,15 @@ public class SimProgram {
     //=========================
     private void generate(){
         //Generate Code
-        codeSpace = rng.nextInt(minSize, maxSize);
+        codeSpace = CentralRandom.getRNG().nextInt(minSize, maxSize);
         //Determine jumps
         int[] nextInstrs = shuffleInstrJump(codeSpace);
-        variableSpace = rng.nextInt(minSize, 2*maxSize);
+        variableSpace = CentralRandom.getRNG().nextInt(minSize, 2*maxSize);
         int last_variable = 0;
         for(int i = 0;i < codeSpace;i++){
             int instrAddr = instrSize * i;
             //Randomly determine instruction type.
-            int roll = rng.nextInt(100);
+            int roll = CentralRandom.getRNG().nextInt(100);
             SimInstruction temp;
             if(roll < 70){
                 //Simple operation instruction (~70%)
@@ -71,18 +73,18 @@ public class SimProgram {
             }
             else {
                 //Memory operation instruction (~30%)
-                int memoryRoll = rng.nextInt(100);
+                int memoryRoll = CentralRandom.getRNG().nextInt(100);
                 int address;
                 if (memoryRoll < 40) {
                     //Memory access is near last access (~40%, spatial locality)
-                    address = last_variable + (rng.nextInt(10) - 5);
+                    address = last_variable + (CentralRandom.getRNG().nextInt(10) - 5);
                     address = Math.max(0, Math.min(address, variableSpace - 1));
                 } else if (memoryRoll < 60) {
                     //Memory access is the same as last access (~20%, temporal locality)
                     address = last_variable;
                 } else {
                     //Memory access is somewhere random (~40%, no locality)
-                    address = rng.nextInt(variableSpace);
+                    address = CentralRandom.getRNG().nextInt(variableSpace);
                 }
                 last_variable = address;
                 temp = new MemoryInstruction(instrAddr, nextInstrs[i], address);
@@ -102,7 +104,7 @@ public class SimProgram {
                 code.set(instr, temp);
                 break;
             }
-            int roll = rng.nextInt(100);
+            int roll = CentralRandom.getRNG().nextInt(100);
             if(roll <= 10){
                 SimInstruction original = code.get(instr);
                 if(resource_held){
@@ -110,7 +112,7 @@ public class SimProgram {
                     resource_held = false;
                 }
                 else{
-                    resource = rng.nextInt(5) + 1;
+                    resource = CentralRandom.getRNG().nextInt(SimOS.RESOURCES) + 1;
                     temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), resource);
                     resource_held = true;
                 }
@@ -125,8 +127,8 @@ public class SimProgram {
             idxs[i] = i+1;
         }
         for(int i = 0;i < idxs.length-1;i++){
-            if(rng.nextInt(100) < jumpChance){
-                int jump = rng.nextInt(i+1, idxs.length);
+            if(CentralRandom.getRNG().nextInt(100) < jumpChance){
+                int jump = CentralRandom.getRNG().nextInt(i+1, idxs.length);
                 int temp = idxs[i];
                 idxs[i] = idxs[jump];
                 idxs[jump] = temp;
