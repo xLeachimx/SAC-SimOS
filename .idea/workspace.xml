@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Basic Stats">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimRAM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimRAM.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
