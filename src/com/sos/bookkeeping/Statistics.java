@@ -9,9 +9,15 @@
 
 package com.sos.bookkeeping;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+
+import static java.util.Arrays.sort;
 
 public class Statistics {
     //Singleton Methods/Variables
@@ -24,6 +30,7 @@ public class Statistics {
     }
 
     public static void destroy(){
+        instance.writeOut();
         instance = null;
     }
 
@@ -34,7 +41,33 @@ public class Statistics {
     private Statistics(){
         LocalDateTime current = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
-        filename = "os_log_" + current.format(format) + ".log";
+        filename = "os_run_stats_" + current.format(format) + ".log";
         stats = new HashMap<>();
+    }
+
+    public void register(String stat, Object value){
+        stats.put(stat, value);
+    }
+
+    public Object retrieve(String stat){
+        if(!stats.containsKey(stat))return null;
+        return stats.get(stat);
+    }
+
+    public void writeOut(){
+        try {
+            PrintStream ps = new PrintStream(filename);
+            ps.println("OS Simulation run statistics.");
+            String[] sorted_keys = stats.keySet().toArray(new String[0]);
+            Arrays.sort(sorted_keys);
+            for(String key : sorted_keys){
+                ps.printf("%s: %s\n", key, stats.get(key));
+            }
+            ps.close();
+        }
+        catch(IOException exp){
+            System.err.println("Problem writing simulation statistics.");
+            exp.printStackTrace(System.err);
+        }
     }
 }

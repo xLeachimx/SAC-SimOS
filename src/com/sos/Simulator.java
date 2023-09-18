@@ -10,6 +10,7 @@
 package com.sos;
 
 import com.sos.bookkeeping.Logger;
+import com.sos.bookkeeping.Statistics;
 import com.sos.generator.CentralRandom;
 import com.sos.generator.SimUser;
 import com.sos.os.*;
@@ -20,7 +21,10 @@ public class Simulator {
     private static final int PROGRESS_UPDATE_FREQ = 10;
     private static final int PROGRESS_GRANULARITY = 20;
     public static void main(String[] args) {
-//        CentralRandom.getRNG(42L);
+        long rngSeed = System.currentTimeMillis();
+        CentralRandom.getRNG(rngSeed);
+        Statistics.getStatLog();
+        Statistics.getStatLog().register("RNG Seed:", rngSeed);
         Logger.getLog();
         //Create and setup users
         ArrayList<SimUser> users = new ArrayList<>();
@@ -51,6 +55,8 @@ public class Simulator {
             currentStep += 1;
         }
         System.out.println("\rSimulation Completed.");
+        Statistics.getStatLog().register("Total CPU cycles:", operatingSystem.getCPUCylceCount());
+        Statistics.destroy();
         Logger.destroy();
     }
 

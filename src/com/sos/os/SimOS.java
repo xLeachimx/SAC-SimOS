@@ -11,6 +11,7 @@
 package com.sos.os;
 
 import com.sos.bookkeeping.Logger;
+import com.sos.bookkeeping.Statistics;
 import com.sos.generator.CentralRandom;
 import com.sos.hardware.SimCPU;
 import com.sos.hardware.SimRAM;
@@ -57,6 +58,8 @@ public class SimOS {
         int priority = CentralRandom.getRNG().nextInt(7);
         processMap.put(pid, process);
         Logger.getLog().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
+        String stats_key = String.format("Add P%d:", pid);
+        Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
         scheduler.addProcess(new SimProcessInfo(process,pid, priority));
     }
 
@@ -118,6 +121,8 @@ public class SimOS {
         for(Integer key : processMap.keySet()){
             if(processMap.get(key).getState() == SimProcessState.TERMINATED){
                 Logger.getLog().log(String.format("Process %d complete and removed from system.", key));
+                String stats_key = String.format("Complete P%d:", key);
+                Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
                 removals.add(key);
             }
         }
@@ -128,5 +133,9 @@ public class SimOS {
 
     public int currentProcesses(){
         return processMap.size();
+    }
+
+    public int getCPUCylceCount(){
+        return cpu.getCycleCount();
     }
 }

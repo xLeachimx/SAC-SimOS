@@ -32,4 +32,8 @@ public class SimCPU {
         Logger.getLog().log(String.format("Ran %d cycles on process %d.", cycles, pid));
         cycleCount += cycles;
     }
+
+    public int getCycleCount(){
+        return cycleCount;
+    }
 }
