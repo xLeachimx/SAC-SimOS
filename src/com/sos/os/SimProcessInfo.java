@@ -9,10 +9,9 @@
 
 package com.sos.os;
 
-import java.util.Random;
+import com.sos.generator.CentralRandom;
 
 public class SimProcessInfo {
-    private static final Random rng = new Random();
     private final SimProcess process;
     private int estCompTime;
     private final int pid;
@@ -46,7 +45,7 @@ public class SimProcessInfo {
     }
 
     public int calculateCompletionTime(){
-        double error = 1.0 + ((0.2 * rng.nextDouble()) - 0.4);
+        double error = 1.0 + ((0.2 * CentralRandom.getRNG().nextDouble()) - 0.4);
         estCompTime = (int)(error * process.completionTime());
         return estCompTime;
     }

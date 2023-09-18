@@ -34,6 +34,7 @@ public class SimProcess {
             Logger.getLog().error("Attempted to run a WAITING or COMPLETE process.");
             return 0;
         }
+        state = SimProcessState.RUNNING;
         for(int i = 0;i < cycles;i++) {
             remainingCyclesOnInstr -= 1;
             cycleCount += 1;
