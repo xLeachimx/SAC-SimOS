@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Basic Stats">
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Central Random time est">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +143,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695038551847</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Central Random time est">
+      <created>1695045512108</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1695045512108</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -168,7 +175,8 @@
     <MESSAGE value="Fixed execution error that skipped some resource instructions." />
     <MESSAGE value="Progress bar and QoL improvements." />
     <MESSAGE value="Basic Stats" />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic Stats" />
+    <MESSAGE value="Central Random time est" />
+    <option name="LAST_COMMIT_MESSAGE" value="Central Random time est" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
