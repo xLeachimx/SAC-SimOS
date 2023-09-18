@@ -12,9 +12,5 @@ public interface SimInstruction {
     int getInstructionAddress();
     int getNextInstructionIndex();
     int getCycleCount();
-    boolean isResourceInstruction();
-    int getResourceAccess();
-    boolean isMemoryInstruction();
-    int getMemoryAccess();
-    boolean isOperationInstruction();
+    SimInstructionType getType();
 }

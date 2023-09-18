@@ -10,6 +10,7 @@
 package com.sos.os.instructions;
 
 import com.sos.os.SimInstruction;
+import com.sos.os.SimInstructionType;
 
 public class OperationInstruction implements SimInstruction {
     public static final int OPERATION_CYCLES = 1;
@@ -38,27 +39,7 @@ public class OperationInstruction implements SimInstruction {
     }
 
     @Override
-    public boolean isResourceInstruction() {
-        return false;
-    }
-
-    @Override
-    public int getResourceAccess() {
-        return -1;
-    }
-
-    @Override
-    public boolean isMemoryInstruction() {
-        return false;
-    }
-
-    @Override
-    public int getMemoryAccess(){
-        return -1;
-    }
-
-    @Override
-    public boolean isOperationInstruction() {
-        return true;
+    public SimInstructionType getType(){
+        return SimInstructionType.OPERATION;
     }
 }
