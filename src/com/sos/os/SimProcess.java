@@ -17,14 +17,16 @@ public class SimProcess {
     private int cycleCount;
     private int programInstruction;
     private int remainingCyclesOnInstr;
+    private int createdCycle;
     private SimProcessState state;
 
-    public SimProcess(SimProgram base_program){
+    public SimProcess(SimProgram base_program, int createdCycle){
         this.baseProgram = base_program;
         cycleCount = 0;
         programInstruction = 0;
         remainingCyclesOnInstr = this.baseProgram.getInstr(programInstruction).getCycleCount();
         state = SimProcessState.READY;
+        this.createdCycle = createdCycle;
     }
 
     public int run_cycles(int cycles){
@@ -63,5 +65,9 @@ public class SimProcess {
 
     public SimProcessState getState(){
         return state;
+    }
+
+    public int getWaitCycles(int cpuCycle){
+        return (cpuCycle - createdCycle) - cycleCount;
     }
 }

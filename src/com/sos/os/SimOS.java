@@ -35,6 +35,8 @@ public class SimOS {
     private final SimCPU cpu;
     private final SimRAM ram;
     private int stepCounter;
+    private double avgWait;
+    private int processCount;
     private final HashMap<Integer, SimResource> resourceMap;
 
     public SimOS(ProcessScheduler scheduler, MemoryManager memoryManager, AccessManager accessManager){
@@ -51,6 +53,7 @@ public class SimOS {
         cpu = new SimCPU();
         ram = new SimRAM();
         stepCounter = 0;
+        avgWait = 0;
     }
 
     public void add_process(SimProcess process){
@@ -123,6 +126,10 @@ public class SimOS {
                 Logger.getLog().log(String.format("Process %d complete and removed from system.", key));
                 String stats_key = String.format("Complete P%d:", key);
                 Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
+                stats_key = String.format("Wait P%d:", key);
+                Statistics.getStatLog().register(stats_key, processMap.get(key).getWaitCycles(cpu.getCycleCount()));
+                avgWait += processMap.get(key).getWaitCycles(cpu.getCycleCount());
+                processCount += 1;
                 removals.add(key);
             }
         }
@@ -135,7 +142,11 @@ public class SimOS {
         return processMap.size();
     }
 
-    public int getCPUCylceCount(){
+    public int getCPUCycleCount(){
         return cpu.getCycleCount();
+    }
+
+    public double getAvgWait(){
+        return avgWait/processCount;
     }
 }

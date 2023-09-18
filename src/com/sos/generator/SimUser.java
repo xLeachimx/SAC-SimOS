@@ -43,7 +43,7 @@ public class SimUser {
         else{
             if(roll > PROCESS_TO_PROCESS)currentState = "IDLE";
             int programIdx = CentralRandom.getRNG().nextInt(programs.size());
-            os.add_process(new SimProcess(programs.get(programIdx)));
+            os.add_process(new SimProcess(programs.get(programIdx), os.getCPUCycleCount()));
             processes -= 1;
         }
     }

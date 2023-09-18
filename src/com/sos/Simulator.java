@@ -54,8 +54,9 @@ public class Simulator {
             }
             currentStep += 1;
         }
+        Statistics.getStatLog().register("Average Wait Time:", operatingSystem.getAvgWait());
         System.out.println("\rSimulation Completed.");
-        Statistics.getStatLog().register("Total CPU cycles:", operatingSystem.getCPUCylceCount());
+        Statistics.getStatLog().register("Total CPU cycles:", operatingSystem.getCPUCycleCount());
         Statistics.destroy();
         Logger.destroy();
     }

@@ -11,8 +11,8 @@ package com.sos.hardware;
 
 public class SimRAM {
     //Constants
-    private static final int defaultSize = 30*1024; //30KB default ram
-    private static final int defaultPageSize = 1024; //1KB pages
+    private static final int defaultSize = 10*1024; //10KB default ram
+    private static final int defaultPageSize = 512; //1/2KB pages
 
     //Instance Variables
     private int size;
