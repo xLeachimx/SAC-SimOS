@@ -74,6 +74,7 @@ public class SimProgram {
             else {
                 //Memory operation instruction (~30%)
                 int memoryRoll = CentralRandom.getRNG().nextInt(100);
+                boolean isWrite = CentralRandom.getRNG().nextBoolean();
                 int address;
                 if (memoryRoll < 40) {
                     //Memory access is near last access (~40%, spatial locality)
@@ -87,7 +88,7 @@ public class SimProgram {
                     address = CentralRandom.getRNG().nextInt(variableSpace);
                 }
                 last_variable = address;
-                temp = new MemoryInstruction(instrAddr, nextInstrs[i], address);
+                temp = new MemoryInstruction(instrAddr, nextInstrs[i], address, isWrite);
             }
             code.add(temp);
         }
@@ -100,7 +101,7 @@ public class SimProgram {
             SimInstruction original = code.get(instr);
             int next_instr = original.getNextInstructionIndex();
             if(next_instr == code.size() && resource_held){
-                temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), -resource);
+                temp = new ResourceInstruction(original.getInstructionAddress(), code.size(), resource, false);
                 code.set(instr, temp);
                 break;
             }
@@ -108,12 +109,12 @@ public class SimProgram {
             if(roll <= 10){
                 int addr = original.getInstructionAddress();
                 if(resource_held){
-                    temp = new ResourceInstruction(addr, next_instr, -resource);
+                    temp = new ResourceInstruction(addr, next_instr, resource, false);
                     resource_held = false;
                 }
                 else{
                     resource = CentralRandom.getRNG().nextInt(SimOS.RESOURCES) + 1;
-                    temp = new ResourceInstruction(addr, next_instr, resource);
+                    temp = new ResourceInstruction(addr, next_instr, resource, true);
                     resource_held = true;
                 }
                 code.set(instr, temp);

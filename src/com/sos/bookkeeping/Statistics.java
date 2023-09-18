@@ -61,7 +61,7 @@ public class Statistics {
             String[] sorted_keys = stats.keySet().toArray(new String[0]);
             Arrays.sort(sorted_keys);
             for(String key : sorted_keys){
-                ps.printf("%s: %s\n", key, stats.get(key));
+                ps.printf("%s %s\n", key, stats.get(key));
             }
             ps.close();
         }

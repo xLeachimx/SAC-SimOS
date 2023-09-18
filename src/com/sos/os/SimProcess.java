@@ -19,6 +19,7 @@ public class SimProcess {
     private int remainingCyclesOnInstr;
     private int createdCycle;
     private SimProcessState state;
+    private boolean partialInstr;
 
     public SimProcess(SimProgram base_program, int createdCycle){
         this.baseProgram = base_program;
@@ -27,6 +28,7 @@ public class SimProcess {
         remainingCyclesOnInstr = this.baseProgram.getInstr(programInstruction).getCycleCount();
         state = SimProcessState.READY;
         this.createdCycle = createdCycle;
+        partialInstr = false;
     }
 
     public int run_cycles(int cycles){
@@ -40,12 +42,16 @@ public class SimProcess {
             cycleCount += 1;
             //Move to next instructions
             if (remainingCyclesOnInstr <= 0) {
+                partialInstr = false;
                 programInstruction = baseProgram.getInstr(programInstruction).getNextInstructionIndex();
                 if(!baseProgram.validInstr(programInstruction))
                     state = SimProcessState.TERMINATED;
                 else
                     remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
                 return (i + 1);
+            }
+            else{
+                partialInstr = true;
             }
         }
         return cycles;
@@ -70,5 +76,9 @@ public class SimProcess {
 
     public int getWaitCycles(int cpuCycle){
         return (cpuCycle - createdCycle) - cycleCount;
+    }
+
+    public boolean isPartialInstr() {
+        return partialInstr;
     }
 }

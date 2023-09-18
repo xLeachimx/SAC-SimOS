@@ -15,6 +15,8 @@ import com.sos.bookkeeping.Statistics;
 import com.sos.generator.CentralRandom;
 import com.sos.hardware.SimCPU;
 import com.sos.hardware.SimRAM;
+import com.sos.os.instructions.MemoryInstruction;
+import com.sos.os.instructions.ResourceInstruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class SimOS {
     //Constants
     private static final int GC_FREQ = 20;
     public static final int RESOURCES = 5;
+    public static final int BURST_CYCLES = 40;
     //Class variables
     private static int nextPid = 0;
 
@@ -84,34 +87,46 @@ public class SimOS {
         }
         if(current.getState() == SimProcessState.READY)current.setState(SimProcessState.RUNNING);
         Logger.getLog().log(String.format("Running burst on process %d.", process));
-        SimInstruction instruction = current.getCurrentInstruction();
-        memoryManager.requestMemory(process, instruction.getInstructionAddress(), ram);
-        if(instruction.isMemoryInstruction())
-            memoryManager.requestMemory(process, instruction.getMemoryAccess(), ram);
-        else if(instruction.isResourceInstruction()) {
-            int resourceID = Math.abs(instruction.getResourceAccess());
-            SimResource resource = resourceMap.get(resourceID);
-            if (instruction.getResourceAccess() < 0) {
-                accessManager.releaseResource(process, resourceID);
-                resource.releaseControl(process);
+        int cycles = 0;
+        while(cycles < BURST_CYCLES) {
+            SimInstruction instruction = current.getCurrentInstruction();
+            if(!current.isPartialInstr()){
+                processInstruction(instruction, process);
             }
-            else {
-                boolean result = accessManager.requestResource(process, resourceID);
-                if (result) {
-                    resource.addController(process);
-                } else if (!resource.hasControl(process)) {
-                    current.setState(SimProcessState.WAITING);
-                    Logger.getLog().log(String.format("Process %d held after requesting resource %d.",
-                            process, resourceID));
-                }
+            if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
+            cycles += cpu.run_burst(processMap.get(process), BURST_CYCLES - cycles);
+            stepCounter += 1;
+            if (stepCounter % GC_FREQ == 0) {
+                stepCounter = 0;
+                collect_garbage();
             }
         }
-        if(current.getState() == SimProcessState.WAITING) return;
-        cpu.run_burst(processMap.get(process), process);
-        stepCounter += 1;
-        if(stepCounter%GC_FREQ == 0) {
-            stepCounter = 0;
-            collect_garbage();
+        Logger.getLog().log(String.format("Ran %d cycles on process %d.", cycles, process));
+    }
+
+    public void processInstruction(SimInstruction instr, int pid){
+        if(instr instanceof MemoryInstruction){
+            MemoryInstruction memInstr = (MemoryInstruction) instr;
+            memoryManager.requestMemory(pid, memInstr.getMemoryAddress(), ram);
+        }
+        else if(instr instanceof ResourceInstruction){
+            ResourceInstruction resInstr = (ResourceInstruction) instr;
+            int resID = resInstr.getResource();
+            SimResource resource = resourceMap.get(resID);
+            if(resInstr.isRequest()){
+                boolean result = accessManager.requestResource(pid, resID);
+                if (result) {
+                    resource.addController(pid);
+                } else if (!resource.hasControl(pid)) {
+                    processMap.get(pid).setState(SimProcessState.WAITING);
+                    Logger.getLog().log(String.format("Process %d held after requesting resource %d.",
+                            pid, resID));
+                }
+            }
+            else{
+                accessManager.releaseResource(pid, resID);
+                resource.releaseControl(pid);
+            }
         }
     }
 
