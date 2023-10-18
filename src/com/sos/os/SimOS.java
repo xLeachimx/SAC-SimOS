@@ -61,11 +61,12 @@ public class SimOS {
         int pid = nextPid++;
         SimProcess process = new SimProcess(program, pid, cpu.getCycleCount());
         int priority = CentralRandom.getRNG().nextInt(7);
+        process.setPriority(priority);
         processMap.put(pid, process);
         Logger.log_cpu(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
         String stats_key = String.format("Add P%d", pid);
         Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
-        scheduler.addProcess(new SimProcessInfo(process,pid, priority));
+        scheduler.addProcess(new SimProcessInfo(process));
     }
 
     public void run_step(){
@@ -88,9 +89,10 @@ public class SimOS {
         Logger.log_cpu(String.format("Running burst on process %d.", process));
         int cycles = 0;
         while(cycles < BURST_CYCLES) {
+            if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
             SimInstruction instruction = current.getCurrentInstruction();
             if(!current.isPartialInstr()){
-                processInstruction(instruction, process);
+                processInstruction(instruction, new SimProcessInfo(processMap.get(process)));
             }
             if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
             cycles += cpu.run_burst(processMap.get(process), BURST_CYCLES - cycles);
@@ -103,36 +105,36 @@ public class SimOS {
         Logger.log_cpu(String.format("Ran %d cycles on process %d.", cycles, process));
     }
 
-    public void processInstruction(SimInstruction instr, int pid){
+    public void processInstruction(SimInstruction instr, SimProcessInfo info){
         if(instr == null)return;
-        if(!SimRAM.getInstance().contains(pid, instr.getInstructionAddress()))
-            Logger.log_mem(String.format("Page fault for process %d.", pid));
-        memoryManager.readRequest(pid, instr.getInstructionAddress());
+        if(!SimRAM.getInstance().contains(info.getPid(), instr.getInstructionAddress()))
+            Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
+        memoryManager.readRequest(info, instr.getInstructionAddress());
         if(instr instanceof MemoryInstruction memInstr){
-            if(!SimRAM.getInstance().contains(pid, memInstr.getMemoryAddress()))
-                Logger.log_mem(String.format("Page fault for process %d.", pid));
+            if(!SimRAM.getInstance().contains(info.getPid(), memInstr.getMemoryAddress()))
+                Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
             if(memInstr.isWrite()) {
-                memoryManager.writeRequest(pid, memInstr.getMemoryAddress());
+                memoryManager.writeRequest(info, memInstr.getMemoryAddress());
             }
             else{
-                memoryManager.readRequest(pid, memInstr.getMemoryAddress());
+                memoryManager.readRequest(info, memInstr.getMemoryAddress());
             }
         }
         else if(instr instanceof ResourceInstruction resInstr){
             int resID = resInstr.getResource();
             SimResource resource = resourceMap.get(resID);
             if(resInstr.isRequest()){
-                boolean result = accessManager.requestResource(pid, resID);
+                boolean result = accessManager.requestResource(info, resID);
                 if (result) {
-                    resource.addController(pid);
-                } else if (!resource.hasControl(pid)) {
-                    processMap.get(pid).setState(SimProcessState.WAITING);
-                    Logger.log_res(String.format("Process %d held after requesting resource %d.", pid, resID));
+                    resource.addController(info.getPid());
+                } else if (!resource.hasControl(info.getPid())) {
+                    processMap.get(info.getPid()).setState(SimProcessState.WAITING);
+                    Logger.log_res(String.format("Process %d held after requesting resource %d.", info.getPid(), resID));
                 }
             }
             else{
-                accessManager.releaseResource(pid, resID);
-                resource.releaseControl(pid);
+                accessManager.releaseResource(info, resID);
+                resource.releaseControl(info.getPid());
             }
         }
     }

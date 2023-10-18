@@ -4,22 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Better instructions">
-      <change afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimHDD.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/sos/os/OSConstants.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/sos/os/SimPage.java" afterDir="false" />
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Memory system redesign and logging update.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/bookkeeping/Logger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/generator/SimUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimRAM.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimRAM.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/AccessManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/AccessManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicMemoryManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/MemoryManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/MemoryManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +175,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695057040075</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Memory system redesign and logging update.">
+      <created>1697644439688</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1697644439688</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -209,7 +209,8 @@
     <MESSAGE value="Basic Stats" />
     <MESSAGE value="Instruction changes" />
     <MESSAGE value="Better instructions" />
-    <option name="LAST_COMMIT_MESSAGE" value="Better instructions" />
+    <MESSAGE value="Memory system redesign and logging update." />
+    <option name="LAST_COMMIT_MESSAGE" value="Memory system redesign and logging update." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

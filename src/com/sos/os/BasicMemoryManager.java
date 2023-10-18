@@ -17,16 +17,14 @@ public class BasicMemoryManager implements MemoryManager{
     public BasicMemoryManager(){}
 
     @Override
-    public void writeRequest(int pid, int addr){
-        int page = addr / SimRAM.getInstance().getPageSize();
+    public void writeRequest(SimProcessInfo info, int addr){
         SimRAM.getInstance().free(0);
-        SimRAM.getInstance().store(new SimPage(pid, page), 0);
+        SimRAM.getInstance().store(info.getPage(addr), 0);
     }
 
     @Override
-    public void readRequest(int pid, int addr){
-        int page = addr / SimRAM.getInstance().getPageSize();
+    public void readRequest(SimProcessInfo info, int addr){
         SimRAM.getInstance().free(0);
-        SimRAM.getInstance().store(new SimPage(pid, page), 0);
+        SimRAM.getInstance().store(info.getPage(addr), 0);
     }
 }

@@ -14,14 +14,10 @@ import com.sos.generator.CentralRandom;
 public class SimProcessInfo {
     private final SimProcess process;
     private int estCompTime;
-    private double error;
-    private final int pid;
-    private final int priority;
+    private final double error;
 
-    public SimProcessInfo(SimProcess process, int pid, int priority){
+    public SimProcessInfo(SimProcess process){
         this.process = process;
-        this.pid = pid;
-        this.priority = priority;
         this.error = 1.0 + ((0.2 * CentralRandom.getRNG().nextDouble()) - 0.4);
         calculateCompletionTime();
     }
@@ -31,15 +27,18 @@ public class SimProcessInfo {
     }
 
     public int getPid(){
-        return pid;
+        return process.getPid();
     }
 
     public int getPriority(){
-        return priority;
+        return process.getPriority();
     }
 
     public SimProcessState getState(){
         return process.getState();
+    }
+    public SimPage getPage(int addr){
+        return process.getPage(addr);
     }
 
     public void setState(SimProcessState state){

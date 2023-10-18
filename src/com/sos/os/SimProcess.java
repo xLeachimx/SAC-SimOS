@@ -19,6 +19,7 @@ public class SimProcess {
     private int programInstruction;
     private int remainingCyclesOnInstr;
     private final int createdCycle;
+    private int priority;
     private SimProcessState state;
     private boolean partialInstr;
     private final SimPage[] pages;
@@ -37,6 +38,7 @@ public class SimProcess {
         for(int i = 0;i < pages.length;i++){
             pages[i] = new SimPage(this.pid, i);
         }
+        priority = -1;
     }
 
     public int run_cycles(int cycles){
@@ -88,6 +90,18 @@ public class SimProcess {
 
     public boolean isPartialInstr() {
         return partialInstr;
+    }
+
+    public void setPriority(int val){
+        if(priority == -1)priority = val;
+    }
+
+    public int getPriority(){
+        return priority;
+    }
+
+    public int getPid(){
+        return pid;
     }
 
     public SimPage getPage(int address){
