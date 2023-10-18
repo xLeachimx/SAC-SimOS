@@ -3,19 +3,21 @@
  * Created On: 19 Aug 2023
  * Licence: GNU GPLv3
  * Purpose:
- *
+ *  A basic round-robin pre-emptive scheduler.
  */
 
 
 package com.sos.os;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class BasicProcessScheduler implements ProcessScheduler{
-    private final ArrayList<SimProcessInfo> process_queue;
+    private final LinkedList<SimProcessInfo> process_queue;
+    private int currentIdx;
 
     public BasicProcessScheduler(){
-        process_queue = new ArrayList<>();
+        process_queue = new LinkedList<>();
+        currentIdx = 0;
     }
 
 
@@ -26,10 +28,11 @@ public class BasicProcessScheduler implements ProcessScheduler{
 
     @Override
     public int getNextProcess() {
-        while(process_queue.size() > 0 && process_queue.get(0).getState() == SimProcessState.TERMINATED){
-            process_queue.remove(0);
-        }
+        while(process_queue.size() > 0 && process_queue.peek().getState() == SimProcessState.TERMINATED)
+            process_queue.removeFirst();
         if(process_queue.size() == 0)return -1;
-        return process_queue.get(0).getPid();
+        SimProcessInfo info = process_queue.removeFirst();
+        process_queue.push(info);
+        return info.getPid();
     }
 }

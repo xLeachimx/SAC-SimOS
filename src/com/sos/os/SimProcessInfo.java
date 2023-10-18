@@ -14,6 +14,7 @@ import com.sos.generator.CentralRandom;
 public class SimProcessInfo {
     private final SimProcess process;
     private int estCompTime;
+    private double error;
     private final int pid;
     private final int priority;
 
@@ -21,6 +22,7 @@ public class SimProcessInfo {
         this.process = process;
         this.pid = pid;
         this.priority = priority;
+        this.error = 1.0 + ((0.2 * CentralRandom.getRNG().nextDouble()) - 0.4);
         calculateCompletionTime();
     }
 
@@ -40,12 +42,11 @@ public class SimProcessInfo {
         return process.getState();
     }
 
-    public void set_state(SimProcessState state){
+    public void setState(SimProcessState state){
         process.setState(state);
     }
 
     public int calculateCompletionTime(){
-        double error = 1.0 + ((0.2 * CentralRandom.getRNG().nextDouble()) - 0.4);
         estCompTime = (int)(error * process.completionTime());
         return estCompTime;
     }

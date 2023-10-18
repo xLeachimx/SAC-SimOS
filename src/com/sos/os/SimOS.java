@@ -36,7 +36,6 @@ public class SimOS {
     private final MemoryManager memoryManager;
     private final AccessManager accessManager;
     private final SimCPU cpu;
-    private final SimRAM ram;
     private int stepCounter;
     private double avgWait;
     private int processCount;
@@ -54,17 +53,17 @@ public class SimOS {
             this.accessManager.addResource(i);
         }
         cpu = new SimCPU();
-        ram = new SimRAM();
         stepCounter = 0;
         avgWait = 0;
     }
 
-    public void add_process(SimProcess process){
+    public void add_process(SimProgram program){
         int pid = nextPid++;
+        SimProcess process = new SimProcess(program, pid, cpu.getCycleCount());
         int priority = CentralRandom.getRNG().nextInt(7);
         processMap.put(pid, process);
-        Logger.getLog().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
-        String stats_key = String.format("Add P%d:", pid);
+        Logger.log_cpu(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
+        String stats_key = String.format("Add P%d", pid);
         Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
         scheduler.addProcess(new SimProcessInfo(process,pid, priority));
     }
@@ -73,20 +72,20 @@ public class SimOS {
         int process = scheduler.getNextProcess();
         if(process == -1){
             collect_garbage();
-            Logger.getLog().log("No active process. Idling.");
+            Logger.log_cpu("No active process. Idling.");
             return;
         }
         SimProcess current = processMap.get(process);
         if(current.getState() == SimProcessState.WAITING){
-            Logger.getLog().error(String.format("Burst attempted on process %d, which is waiting.", process));
+            Logger.error_cpu(String.format("Burst attempted on process %d, which is waiting.", process));
             return;
         }
         if(current.getState() == SimProcessState.TERMINATED){
-            Logger.getLog().error(String.format("Burst attempted on process %d, which is terminated.", process));
+            Logger.error_cpu(String.format("Burst attempted on process %d, which is terminated.", process));
             return;
         }
         if(current.getState() == SimProcessState.READY)current.setState(SimProcessState.RUNNING);
-        Logger.getLog().log(String.format("Running burst on process %d.", process));
+        Logger.log_cpu(String.format("Running burst on process %d.", process));
         int cycles = 0;
         while(cycles < BURST_CYCLES) {
             SimInstruction instruction = current.getCurrentInstruction();
@@ -101,16 +100,25 @@ public class SimOS {
                 collect_garbage();
             }
         }
-        Logger.getLog().log(String.format("Ran %d cycles on process %d.", cycles, process));
+        Logger.log_cpu(String.format("Ran %d cycles on process %d.", cycles, process));
     }
 
     public void processInstruction(SimInstruction instr, int pid){
-        if(instr instanceof MemoryInstruction){
-            MemoryInstruction memInstr = (MemoryInstruction) instr;
-            memoryManager.requestMemory(pid, memInstr.getMemoryAddress(), ram);
+        if(instr == null)return;
+        if(!SimRAM.getInstance().contains(pid, instr.getInstructionAddress()))
+            Logger.log_mem(String.format("Page fault for process %d.", pid));
+        memoryManager.readRequest(pid, instr.getInstructionAddress());
+        if(instr instanceof MemoryInstruction memInstr){
+            if(!SimRAM.getInstance().contains(pid, memInstr.getMemoryAddress()))
+                Logger.log_mem(String.format("Page fault for process %d.", pid));
+            if(memInstr.isWrite()) {
+                memoryManager.writeRequest(pid, memInstr.getMemoryAddress());
+            }
+            else{
+                memoryManager.readRequest(pid, memInstr.getMemoryAddress());
+            }
         }
-        else if(instr instanceof ResourceInstruction){
-            ResourceInstruction resInstr = (ResourceInstruction) instr;
+        else if(instr instanceof ResourceInstruction resInstr){
             int resID = resInstr.getResource();
             SimResource resource = resourceMap.get(resID);
             if(resInstr.isRequest()){
@@ -119,8 +127,7 @@ public class SimOS {
                     resource.addController(pid);
                 } else if (!resource.hasControl(pid)) {
                     processMap.get(pid).setState(SimProcessState.WAITING);
-                    Logger.getLog().log(String.format("Process %d held after requesting resource %d.",
-                            pid, resID));
+                    Logger.log_res(String.format("Process %d held after requesting resource %d.", pid, resID));
                 }
             }
             else{
@@ -138,10 +145,10 @@ public class SimOS {
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
             if(processMap.get(key).getState() == SimProcessState.TERMINATED){
-                Logger.getLog().log(String.format("Process %d complete and removed from system.", key));
-                String stats_key = String.format("Complete P%d:", key);
+                Logger.log_cpu(String.format("Process %d complete and removed from system.", key));
+                String stats_key = String.format("Complete P%d", key);
                 Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
-                stats_key = String.format("Wait P%d:", key);
+                stats_key = String.format("Wait P%d", key);
                 Statistics.getStatLog().register(stats_key, processMap.get(key).getWaitCycles(cpu.getCycleCount()));
                 avgWait += processMap.get(key).getWaitCycles(cpu.getCycleCount());
                 processCount += 1;

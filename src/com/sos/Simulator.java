@@ -21,10 +21,11 @@ public class Simulator {
     private static final int PROGRESS_UPDATE_FREQ = 10;
     private static final int PROGRESS_GRANULARITY = 20;
     public static void main(String[] args) {
+        Logger.limit(true, true, true);
         long rngSeed = System.currentTimeMillis();
         CentralRandom.getRNG(rngSeed);
         Statistics.getStatLog();
-        Statistics.getStatLog().register("RNG Seed:", rngSeed);
+        Statistics.getStatLog().register("RNG Seed", rngSeed);
         Logger.getLog();
         //Create and setup users
         ArrayList<SimUser> users = new ArrayList<>();
@@ -54,9 +55,9 @@ public class Simulator {
             }
             currentStep += 1;
         }
-        Statistics.getStatLog().register("Average Wait Time:", operatingSystem.getAvgWait());
+        Statistics.getStatLog().register("Average Wait Time", operatingSystem.getAvgWait());
         System.out.println("\rSimulation Completed.");
-        Statistics.getStatLog().register("Total CPU cycles:", operatingSystem.getCPUCycleCount());
+        Statistics.getStatLog().register("Total CPU cycles", operatingSystem.getCPUCycleCount());
         Statistics.destroy();
         Logger.destroy();
     }

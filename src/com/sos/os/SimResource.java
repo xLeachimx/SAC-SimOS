@@ -27,21 +27,21 @@ public class SimResource {
     public void releaseControl(int processID){
         if(controllingProcesses.contains(processID)){
             controllingProcesses.remove(processID);
-            Logger.getLog().log(String.format("Process %d released resource %d.", processID, resourceID));
+            Logger.log_res(String.format("Process %d released resource %d.", processID, resourceID));
         }
         else{
-            Logger.getLog().error(String.format("Process %d attempted to release resource %d, which it did not control.",
+            Logger.error_res(String.format("Process %d attempted to release resource %d, which it did not control.",
                                                     processID, resourceID));
         }
     }
 
     public void addController(int processID){
         if(!controllingProcesses.contains(processID)) {
-            Logger.getLog().log(String.format("Process %d now controlling resource %d.", processID, resourceID));
+            Logger.log_res(String.format("Process %d now controlling resource %d.", processID, resourceID));
         }
         controllingProcesses.add(processID);
         if(controllingProcesses.size() > 1){
-            Logger.getLog().error(String.format("%d processes controlling resource %d.", controllingProcesses.size(), resourceID));
+            Logger.error_res(String.format("%d processes controlling resource %d.", controllingProcesses.size(), resourceID));
         }
     }
 
