@@ -17,6 +17,9 @@ import java.time.format.DateTimeFormatter;
 public class Logger {
     //Singleton Methods/Variables
     private static Logger instance = null;
+    private static boolean allow_cpu = true;
+    private static boolean allow_mem = true;
+    private static boolean allow_res = true;
 
     public static Logger getLog(){
         if(instance == null)
@@ -26,6 +29,36 @@ public class Logger {
 
     public static void destroy(){
         instance = null;
+    }
+
+    public static void limit(boolean cpu, boolean mem, boolean res){
+        allow_cpu = cpu;
+        allow_mem = mem;
+        allow_res = res;
+    }
+
+    public static void log_cpu(String message){
+        if(allow_cpu)getLog().log(message);
+    }
+
+    public static void log_mem(String message){
+        if(allow_mem)getLog().log(message);
+    }
+
+    public static void log_res(String message){
+        if(allow_res)getLog().log(message);
+    }
+
+    public static void error_cpu(String message){
+        if(allow_cpu)getLog().error(message);
+    }
+
+    public static void error_mem(String message){
+        if(allow_mem)getLog().error(message);
+    }
+
+    public static void error_res(String message){
+        if(allow_res)getLog().error(message);
     }
 
     //Instance Methods and Variables

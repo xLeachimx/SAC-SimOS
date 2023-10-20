@@ -14,19 +14,17 @@ import com.sos.hardware.SimRAM;
 import java.util.Random;
 
 public class BasicMemoryManager implements MemoryManager{
-    private final Random rng;
-    public BasicMemoryManager(){
-        rng = new Random();
-    }
+    public BasicMemoryManager(){}
+
     @Override
-    public void requestMemory(int pid, int addr, SimRAM ram) {
-        int page = addr / ram.getPageSize();
-        for(int i = 0;i < ram.numPages();i++) {
-            //Page already in memory
-            if(page == ram.getProcessPage(page))return;
-        }
-        Logger.getLog().log(String.format("Page fault for process %d page %d.", pid, page));
-        ram.free(0);
-        ram.allocate(0, pid, page);
+    public void writeRequest(SimProcessInfo info, int addr){
+        SimRAM.getInstance().free(0);
+        SimRAM.getInstance().store(info.getPage(addr), 0);
+    }
+
+    @Override
+    public void readRequest(SimProcessInfo info, int addr){
+        SimRAM.getInstance().free(0);
+        SimRAM.getInstance().store(info.getPage(addr), 0);
     }
 }

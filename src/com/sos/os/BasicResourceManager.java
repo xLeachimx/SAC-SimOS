@@ -16,12 +16,12 @@ public class BasicResourceManager implements AccessManager{
     }
 
     @Override
-    public boolean requestResource(int pid, int resource) {
+    public boolean requestResource(SimProcessInfo info, int resource, boolean write) {
         return true;
     }
 
     @Override
-    public void releaseResource(int pid, int resource) {
+    public void releaseResource(SimProcessInfo info, int resource) {
         return;
     }
 }

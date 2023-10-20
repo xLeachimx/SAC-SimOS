@@ -4,9 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Central Random time est">
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Making processes and process info more useful.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimCPU.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/AccessManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/AccessManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/instructions/ResourceInstruction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/instructions/ResourceInstruction.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,8 +23,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Interface" />
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -26,6 +33,11 @@
     <option name="BRANCH" value="origin/main" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -41,7 +53,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;fileTemplates&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;
   }
 }</component>
   <component name="RunManager">
@@ -143,14 +155,42 @@
       <option name="project" value="LOCAL" />
       <updated>1695038551847</updated>
     </task>
-    <task id="LOCAL-00011" summary="Central Random time est">
-      <created>1695045512108</created>
+    <task id="LOCAL-00011" summary="Basic Stats">
+      <created>1695040608605</created>
       <option name="number" value="00011" />
       <option name="presentableId" value="LOCAL-00011" />
       <option name="project" value="LOCAL" />
-      <updated>1695045512108</updated>
+      <updated>1695040608605</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Instruction changes">
+      <created>1695054626216</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1695054626216</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Better instructions">
+      <created>1695057040075</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1695057040075</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Memory system redesign and logging update.">
+      <created>1697644439688</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1697644439688</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Making processes and process info more useful.">
+      <created>1697655016434</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1697655016434</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -175,8 +215,11 @@
     <MESSAGE value="Fixed execution error that skipped some resource instructions." />
     <MESSAGE value="Progress bar and QoL improvements." />
     <MESSAGE value="Basic Stats" />
-    <MESSAGE value="Central Random time est" />
-    <option name="LAST_COMMIT_MESSAGE" value="Central Random time est" />
+    <MESSAGE value="Instruction changes" />
+    <MESSAGE value="Better instructions" />
+    <MESSAGE value="Memory system redesign and logging update." />
+    <MESSAGE value="Making processes and process info more useful." />
+    <option name="LAST_COMMIT_MESSAGE" value="Making processes and process info more useful." />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

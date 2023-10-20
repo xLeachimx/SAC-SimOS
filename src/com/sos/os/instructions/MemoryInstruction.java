@@ -10,17 +10,20 @@
 package com.sos.os.instructions;
 
 import com.sos.os.SimInstruction;
+import com.sos.os.SimInstructionType;
 
 public class MemoryInstruction implements SimInstruction {
     public static final int MEMORY_CYCLES = 5;
     private final int address;
     private final int next;
     private final int memoryAccess;
+    private final boolean write;
 
-    public MemoryInstruction(int address, int next, int memoryAccess){
+    public MemoryInstruction(int address, int next, int memoryAccess, boolean write){
         this.address = address;
         this.next = next;
         this.memoryAccess = memoryAccess;
+        this.write = write;
     }
 
     @Override
@@ -38,28 +41,15 @@ public class MemoryInstruction implements SimInstruction {
         return MEMORY_CYCLES;
     }
 
-    @Override
-    public boolean isResourceInstruction() {
-        return false;
+    public boolean isWrite() {
+        return write;
     }
 
-    @Override
-    public int getResourceAccess() {
-        return -1;
-    }
-
-    @Override
-    public boolean isMemoryInstruction() {
-        return true;
-    }
-
-    @Override
-    public int getMemoryAccess(){
+    public int getMemoryAddress(){
         return memoryAccess;
     }
 
-    @Override
-    public boolean isOperationInstruction() {
-        return false;
+    public SimInstructionType getType(){
+        return SimInstructionType.MEMORY;
     }
 }

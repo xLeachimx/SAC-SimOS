@@ -15,6 +15,8 @@ import com.sos.bookkeeping.Statistics;
 import com.sos.generator.CentralRandom;
 import com.sos.hardware.SimCPU;
 import com.sos.hardware.SimRAM;
+import com.sos.os.instructions.MemoryInstruction;
+import com.sos.os.instructions.ResourceInstruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ public class SimOS {
     //Constants
     private static final int GC_FREQ = 20;
     public static final int RESOURCES = 5;
+    public static final int BURST_CYCLES = 40;
     //Class variables
     private static int nextPid = 0;
 
@@ -33,7 +36,6 @@ public class SimOS {
     private final MemoryManager memoryManager;
     private final AccessManager accessManager;
     private final SimCPU cpu;
-    private final SimRAM ram;
     private int stepCounter;
     private double avgWait;
     private int processCount;
@@ -51,68 +53,98 @@ public class SimOS {
             this.accessManager.addResource(i);
         }
         cpu = new SimCPU();
-        ram = new SimRAM();
         stepCounter = 0;
         avgWait = 0;
     }
 
-    public void add_process(SimProcess process){
+    public void add_process(SimProgram program){
         int pid = nextPid++;
+        SimProcess process = new SimProcess(program, pid, cpu.getCycleCount());
         int priority = CentralRandom.getRNG().nextInt(7);
+        process.setPriority(priority);
         processMap.put(pid, process);
-        Logger.getLog().log(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
-        String stats_key = String.format("Add P%d:", pid);
+        Logger.log_cpu(String.format("New process added. Pid: %d and Priority: %d.", pid, priority));
+        String stats_key = String.format("Add P%d", pid);
         Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
-        scheduler.addProcess(new SimProcessInfo(process,pid, priority));
+        scheduler.addProcess(new SimProcessInfo(process));
     }
 
     public void run_step(){
         int process = scheduler.getNextProcess();
         if(process == -1){
             collect_garbage();
-            Logger.getLog().log("No active process. Idling.");
+            Logger.log_cpu("No active process. Idling.");
             return;
         }
         SimProcess current = processMap.get(process);
         if(current.getState() == SimProcessState.WAITING){
-            Logger.getLog().error(String.format("Burst attempted on process %d, which is waiting.", process));
+            Logger.error_cpu(String.format("Burst attempted on process %d, which is waiting.", process));
             return;
         }
         if(current.getState() == SimProcessState.TERMINATED){
-            Logger.getLog().error(String.format("Burst attempted on process %d, which is terminated.", process));
+            Logger.error_cpu(String.format("Burst attempted on process %d, which is terminated.", process));
             return;
         }
         if(current.getState() == SimProcessState.READY)current.setState(SimProcessState.RUNNING);
-        Logger.getLog().log(String.format("Running burst on process %d.", process));
-        SimInstruction instruction = current.getCurrentInstruction();
-        memoryManager.requestMemory(process, instruction.getInstructionAddress(), ram);
-        if(instruction.isMemoryInstruction())
-            memoryManager.requestMemory(process, instruction.getMemoryAccess(), ram);
-        else if(instruction.isResourceInstruction()) {
-            int resourceID = Math.abs(instruction.getResourceAccess());
-            SimResource resource = resourceMap.get(resourceID);
-            if (instruction.getResourceAccess() < 0) {
-                accessManager.releaseResource(process, resourceID);
-                resource.releaseControl(process);
-            }
-            else {
-                boolean result = accessManager.requestResource(process, resourceID);
-                if (result) {
-                    resource.addController(process);
-                } else if (!resource.hasControl(process)) {
-                    current.setState(SimProcessState.WAITING);
-                    Logger.getLog().log(String.format("Process %d held after requesting resource %d.",
-                            process, resourceID));
+        Logger.log_cpu(String.format("Running burst on process %d.", process));
+        int cycles = 0;
+        while(cycles < BURST_CYCLES) {
+            if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
+            SimInstruction instruction = current.getCurrentInstruction();
+            if(!current.isPartialInstr()){
+                if(!processInstruction(instruction, new SimProcessInfo(processMap.get(process)))) {
+                    int busyWaiting = BURST_CYCLES - cycles;
+                    cpu.run_idle(busyWaiting);
+                    cycles = BURST_CYCLES;
+                    break;
                 }
             }
+            if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
+            cycles += cpu.run_burst(processMap.get(process), BURST_CYCLES - cycles);
+            stepCounter += 1;
+            if (stepCounter % GC_FREQ == 0) {
+                stepCounter = 0;
+                collect_garbage();
+            }
         }
-        if(current.getState() == SimProcessState.WAITING) return;
-        cpu.run_burst(processMap.get(process), process);
-        stepCounter += 1;
-        if(stepCounter%GC_FREQ == 0) {
-            stepCounter = 0;
-            collect_garbage();
+        Logger.log_cpu(String.format("Ran %d cycles on process %d.", cycles, process));
+    }
+
+    public boolean processInstruction(SimInstruction instr, SimProcessInfo info){
+        if(instr == null)return false;
+        if(!SimRAM.getInstance().contains(info.getPid(), instr.getInstructionAddress()))
+            Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
+        memoryManager.readRequest(info, instr.getInstructionAddress());
+        if(instr instanceof MemoryInstruction memInstr){
+            if(!SimRAM.getInstance().contains(info.getPid(), memInstr.getMemoryAddress()))
+                Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
+            if(memInstr.isWrite()) {
+                memoryManager.writeRequest(info, memInstr.getMemoryAddress());
+            }
+            else{
+                memoryManager.readRequest(info, memInstr.getMemoryAddress());
+            }
+            return true;
         }
+        else if(instr instanceof ResourceInstruction resInstr){
+            int resID = resInstr.getResource();
+            SimResource resource = resourceMap.get(resID);
+            if(resInstr.isRequest()){
+                boolean result = accessManager.requestResource(info, resID, resInstr.isWrite());
+                if (result) {
+                    resource.addController(info.getPid(), resInstr.isWrite());
+                } else if (!resource.hasControl(info.getPid())) {
+                    Logger.log_res(String.format("Process %d did not get control of resource %d.", info.getPid(), resID));
+                    return false;
+                }
+            }
+            else{
+                accessManager.releaseResource(info, resID);
+                resource.releaseControl(info.getPid());
+            }
+            return true;
+        }
+        return true;
     }
 
     public boolean idle(){
@@ -123,10 +155,10 @@ public class SimOS {
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
             if(processMap.get(key).getState() == SimProcessState.TERMINATED){
-                Logger.getLog().log(String.format("Process %d complete and removed from system.", key));
-                String stats_key = String.format("Complete P%d:", key);
+                Logger.log_cpu(String.format("Process %d complete and removed from system.", key));
+                String stats_key = String.format("Complete P%d", key);
                 Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
-                stats_key = String.format("Wait P%d:", key);
+                stats_key = String.format("Wait P%d", key);
                 Statistics.getStatLog().register(stats_key, processMap.get(key).getWaitCycles(cpu.getCycleCount()));
                 avgWait += processMap.get(key).getWaitCycles(cpu.getCycleCount());
                 processCount += 1;

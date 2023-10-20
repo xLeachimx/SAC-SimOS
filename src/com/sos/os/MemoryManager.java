@@ -3,5 +3,6 @@ package com.sos.os;
 import com.sos.hardware.SimRAM;
 
 public interface MemoryManager {
-    void requestMemory(int pid, int addr, SimRAM ram);
+    void writeRequest(SimProcessInfo process, int addr);
+    void readRequest(SimProcessInfo process, int addr);
 }

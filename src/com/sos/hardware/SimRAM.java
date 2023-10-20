@@ -9,117 +9,130 @@
 
 package com.sos.hardware;
 
+import com.sos.bookkeeping.Logger;
+import com.sos.os.OSConstants;
+import com.sos.os.SimPage;
+
 public class SimRAM {
-    //Constants
-    private static final int defaultSize = 10*1024; //10KB default ram
-    private static final int defaultPageSize = 512; //1/2KB pages
+    //Singleton Variables and Methods
+    private static SimRAM instance = null;
+
+    public static SimRAM create(){
+        instance = new SimRAM();
+        return instance;
+    }
+
+    public static SimRAM getInstance(){
+        if(instance == null)return create();
+        return instance;
+    }
+
+    public static void destroy(){
+        instance = null;
+    }
+
+    //Internals static class
+    private static class Frame{
+        SimPage contents;
+        boolean free;
+
+        public Frame(){
+            contents = null;
+            free = true;
+        }
+    }
 
     //Instance Variables
-    private int size;
-    private int pageSize;
-    private PageInfo[] pages;
+    private final Frame[] frames;
+    private final int pageSize;
+    private final int memSize;
 
-    public SimRAM(){
-        size = defaultSize;
-        pageSize = defaultPageSize;
-        pages = new PageInfo[size/pageSize];
-        for(int i = 0;i < pages.length;i++){
-            pages[i] = new PageInfo();
+    private SimRAM(){
+        memSize = OSConstants.ramSize;
+        pageSize = OSConstants.pageSize;
+        frames = new Frame[memSize/pageSize];
+        for(int i = 0;i < frames.length;i++){
+            frames[i] = new Frame();
         }
     }
 
-    public SimRAM(int page_size){
-        size = defaultSize;
-        this.pageSize = page_size;
-        pages = new PageInfo[size/this.pageSize];
-        for(int i = 0;i < pages.length;i++){
-            pages[i] = new PageInfo();
-        }
-    }
-
-    public SimRAM(int size, int page_size){
-        this.size = size;
-        this.pageSize = page_size;
-        pages = new PageInfo[this.size/this.pageSize];
-        for(int i = 0;i < pages.length;i++){
-            pages[i] = new PageInfo();
-        }
-    }
-
-    public int numPages(){
-        return pages.length;
-    }
-
+    //Basic Frame Queries
     public int nextFree(){
-        for(int i = 0;i < pages.length;i++){
-            if(!pages[i].allocated)return i;
+        for(int i = 0;i < frames.length;i++){
+            if(frames[i].free)return i;
         }
         return -1;
     }
 
-    public boolean allocate(int page, int pid, int processPage){
-        if(page < 0 || page >= pages.length)return false;
-        if(pages[page].allocated)return false;
-        pages[page].pid = pid;
-        pages[page].processPage = processPage;
-        pages[page].allocated = true;
+    public boolean store(SimPage page, int frame){
+        if(frame < 0 || frame >= frames.length)return false;
+        if(!frames[frame].free && frames[frame].contents.isChanged())
+            Logger.error_mem(String.format("Page %d of process %d not written to disk before being written over.",
+                    frames[frame].contents.getPid(), frames[frame].contents.getPagenum()));
+        frames[frame].contents = page;
+        frames[frame].contents.placed("RAM");
+        frames[frame].free = false;
         return true;
     }
 
-    public boolean free(int page){
-        if(page < 0 || page >= pages.length)return false;
-        pages[page].allocated = false;
+    public boolean free(int frame){
+        if(frame < 0 || frame >= frames.length)return false;
+        if(frames[frame].free)
+            Logger.error_mem(String.format("Freed frame %d which was empty.", frame));
+        else if(frames[frame].contents.isChanged())
+            Logger.error_mem(String.format("Page %d of process %d freed before being written to disk.",
+                    frames[frame].contents.getPid(), frames[frame].contents.getPagenum()));
+        frames[frame].free = true;
+        if(frames[frame].contents != null && !frames[frame].contents.onDisk())
+            frames[frame].contents.placed("Nowhere");
         return true;
     }
 
-    public void processClear(int pid){
-        for(PageInfo page : pages){
-            if(page.pid == pid)page.allocated = false;
+    public void freeAll(int pid){
+        for(Frame frame : frames){
+            if(frame.contents.getPid() == pid){
+                frame.free = true;
+                if(!frame.contents.onDisk())
+                    frame.contents.placed("Nowhere");
+            }
         }
     }
 
-    public int getPagePid(int page){
-        if(page < 0 || page >= pages.length)return -1;
-        return pages[page].pid;
+    public SimPage get(int frame){
+        if(frame < 0 || frame > frames.length)return null;
+        if(!frames[frame].contents.inRAM())
+            Logger.error_mem(String.format("Page in frame %d no in RAM.", frame));
+        if(frames[frame].free) {
+            Logger.error_mem(String.format("Page in frame %d does not contain page.", frame));
+            return null;
+        }
+        return frames[frame].contents;
     }
 
-    public int getProcessPage(int page){
-        if(page < 0 || page >= pages.length)return -1;
-        return pages[page].processPage;
+    public SimPage find(int pid, int pagenum){
+        for(Frame frame : frames){
+            if(!frame.free && frame.contents.getPid() == pid && frame.contents.getPagenum() == pagenum)
+                return frame.contents;
+        }
+        return null;
+    }
+
+    public boolean contains(int pid, int address){
+        for(Frame frame : frames){
+            if(!frame.free && frame.contents.getPid() == pid && frame.contents.contains(address))return true;
+        }
+        return false;
+    }
+
+    public int getMemSize(){
+        return memSize;
     }
 
     public int getPageSize(){
         return pageSize;
     }
 
-    public boolean retrieve(int pid, int processPage){
-        for(PageInfo page : pages){
-            if(page.pid == pid && page.processPage == processPage)return true;
-        }
-        return false;
-    }
-
-    public boolean writeTo(int pid, int processPage){
-        for(PageInfo page : pages){
-            if(page.pid == pid && page.processPage == processPage){
-                page.written = true;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private class PageInfo {
-        public int pid;
-        public int processPage;
-        public boolean allocated;
-        public boolean written;
-
-        public PageInfo(){
-            pid = -1;
-            processPage = -1;
-            allocated = false;
-            written = false;
-        }
+    public int getFrameCount(){
+        return frames.length;
     }
 }
