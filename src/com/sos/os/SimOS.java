@@ -92,7 +92,12 @@ public class SimOS {
             if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
             SimInstruction instruction = current.getCurrentInstruction();
             if(!current.isPartialInstr()){
-                processInstruction(instruction, new SimProcessInfo(processMap.get(process)));
+                if(!processInstruction(instruction, new SimProcessInfo(processMap.get(process)))) {
+                    int busyWaiting = BURST_CYCLES - cycles;
+                    cpu.run_idle(busyWaiting);
+                    cycles = BURST_CYCLES;
+                    break;
+                }
             }
             if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
             cycles += cpu.run_burst(processMap.get(process), BURST_CYCLES - cycles);
@@ -105,8 +110,8 @@ public class SimOS {
         Logger.log_cpu(String.format("Ran %d cycles on process %d.", cycles, process));
     }
 
-    public void processInstruction(SimInstruction instr, SimProcessInfo info){
-        if(instr == null)return;
+    public boolean processInstruction(SimInstruction instr, SimProcessInfo info){
+        if(instr == null)return false;
         if(!SimRAM.getInstance().contains(info.getPid(), instr.getInstructionAddress()))
             Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
         memoryManager.readRequest(info, instr.getInstructionAddress());
@@ -119,24 +124,27 @@ public class SimOS {
             else{
                 memoryManager.readRequest(info, memInstr.getMemoryAddress());
             }
+            return true;
         }
         else if(instr instanceof ResourceInstruction resInstr){
             int resID = resInstr.getResource();
             SimResource resource = resourceMap.get(resID);
             if(resInstr.isRequest()){
-                boolean result = accessManager.requestResource(info, resID);
+                boolean result = accessManager.requestResource(info, resID, resInstr.isWrite());
                 if (result) {
-                    resource.addController(info.getPid());
+                    resource.addController(info.getPid(), resInstr.isWrite());
                 } else if (!resource.hasControl(info.getPid())) {
-                    processMap.get(info.getPid()).setState(SimProcessState.WAITING);
-                    Logger.log_res(String.format("Process %d held after requesting resource %d.", info.getPid(), resID));
+                    Logger.log_res(String.format("Process %d did not get control of resource %d.", info.getPid(), resID));
+                    return false;
                 }
             }
             else{
                 accessManager.releaseResource(info, resID);
                 resource.releaseControl(info.getPid());
             }
+            return true;
         }
+        return true;
     }
 
     public boolean idle(){

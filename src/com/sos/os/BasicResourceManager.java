@@ -16,7 +16,7 @@ public class BasicResourceManager implements AccessManager{
     }
 
     @Override
-    public boolean requestResource(SimProcessInfo info, int resource) {
+    public boolean requestResource(SimProcessInfo info, int resource, boolean write) {
         return true;
     }
 

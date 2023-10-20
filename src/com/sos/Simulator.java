@@ -21,7 +21,7 @@ public class Simulator {
     private static final int PROGRESS_UPDATE_FREQ = 10;
     private static final int PROGRESS_GRANULARITY = 20;
     public static void main(String[] args) {
-        Logger.limit(true, true, true);
+        Logger.limit(false, false, true);
         long rngSeed = System.currentTimeMillis();
         CentralRandom.getRNG(rngSeed);
         Statistics.getStatLog();

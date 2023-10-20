@@ -19,12 +19,14 @@ public class ResourceInstruction implements SimInstruction {
     private final int next;
     private final int resource;
     private final boolean request;
+    private final boolean write;
 
-    public ResourceInstruction(int address, int next, int resource, boolean request){
+    public ResourceInstruction(int address, int next, int resource, boolean request, boolean write){
         this.address = address;
         this.next = next;
         this.resource = resource;
         this.request = request;
+        this.write = write;
     }
 
     @Override
@@ -49,6 +51,10 @@ public class ResourceInstruction implements SimInstruction {
 
     public boolean isRequest() {
         return request;
+    }
+
+    public boolean isWrite(){
+        return write;
     }
 
     public int getResource(){

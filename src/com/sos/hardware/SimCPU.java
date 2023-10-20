@@ -26,6 +26,10 @@ public class SimCPU {
         return cycles;
     }
 
+    public void run_idle(int amount){
+        cycleCount += amount;
+    }
+
     public int getCycleCount(){
         return cycleCount;
     }
