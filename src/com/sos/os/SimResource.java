@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Objects;
 
 public class SimResource {
-    private static int nextID = 1;
+    private static int nextID = 0;
     private final int resourceID;
     private final HashSet<ResourceController> controllingProcesses;
 
