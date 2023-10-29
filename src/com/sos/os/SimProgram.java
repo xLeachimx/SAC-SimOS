@@ -113,7 +113,7 @@ public class SimProgram {
                     resource_held = false;
                 }
                 else{
-                    resource = CentralRandom.getRNG().nextInt(SimOS.RESOURCES) + 1;
+                    resource = CentralRandom.getRNG().nextInt(SimOS.RESOURCES);
                     temp = new ResourceInstruction(addr, next_instr, resource, true, CentralRandom.getRNG().nextBoolean());
                     resource_held = true;
                 }
