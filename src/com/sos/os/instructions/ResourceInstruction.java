@@ -14,7 +14,7 @@ import com.sos.os.SimInstructionType;
 
 public class ResourceInstruction implements SimInstruction {
 
-    public static final int RESOURCE_CYCLES = 10;
+    public static final int RESOURCE_CYCLES = 1;
     private final int address;
     private final int next;
     private final int resource;

@@ -86,6 +86,6 @@ public class Simulator {
             }
         }
         display.append(']');
-        System.out.print(display.toString());
+        System.out.print(display);
     }
 }

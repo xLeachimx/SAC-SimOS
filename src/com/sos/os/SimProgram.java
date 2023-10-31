@@ -13,11 +13,9 @@ import com.sos.generator.CentralRandom;
 import com.sos.os.instructions.MemoryInstruction;
 import com.sos.os.instructions.OperationInstruction;
 import com.sos.os.instructions.ResourceInstruction;
-import com.sos.os.SimOS;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 public class SimProgram {
     private static final int instrSize = 4;

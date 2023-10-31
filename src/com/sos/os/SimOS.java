@@ -20,12 +20,11 @@ import com.sos.os.instructions.ResourceInstruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Random;
 
 public class SimOS {
     //Constants
     private static final int GC_FREQ = 20;
-    public static final int RESOURCES = 5;
+    public static final int RESOURCES = 10;
     public static final int BURST_CYCLES = 40;
     //Class variables
     private static int nextPid = 0;
@@ -50,7 +49,7 @@ public class SimOS {
         for(int i = 0;i < RESOURCES;i++){
             SimResource temp = new SimResource();
             this.resourceMap.put(temp.getID(), temp);
-            this.accessManager.addResource(i);
+            this.accessManager.addResource(temp.getID());
         }
         cpu = new SimCPU();
         stepCounter = 0;
@@ -95,17 +94,16 @@ public class SimOS {
                 if(!processInstruction(instruction, new SimProcessInfo(processMap.get(process)))) {
                     int busyWaiting = BURST_CYCLES - cycles;
                     cpu.run_idle(busyWaiting);
-                    cycles = BURST_CYCLES;
                     break;
                 }
             }
             if (current.getState() == SimProcessState.WAITING || current.getState() == SimProcessState.TERMINATED) break;
             cycles += cpu.run_burst(processMap.get(process), BURST_CYCLES - cycles);
-            stepCounter += 1;
-            if (stepCounter % GC_FREQ == 0) {
-                stepCounter = 0;
-                collect_garbage();
-            }
+        }
+        stepCounter += 1;
+        if (stepCounter % GC_FREQ == 0) {
+            stepCounter = 0;
+            collect_garbage();
         }
         Logger.log_cpu(String.format("Ran %d cycles on process %d.", cycles, process));
     }
@@ -124,7 +122,6 @@ public class SimOS {
             else{
                 memoryManager.readRequest(info, memInstr.getMemoryAddress());
             }
-            return true;
         }
         else if(instr instanceof ResourceInstruction resInstr){
             int resID = resInstr.getResource();
@@ -142,7 +139,6 @@ public class SimOS {
                 accessManager.releaseResource(info, resID);
                 resource.releaseControl(info.getPid());
             }
-            return true;
         }
         return true;
     }
@@ -155,6 +151,13 @@ public class SimOS {
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
             if(processMap.get(key).getState() == SimProcessState.TERMINATED){
+                for(SimResource res : resourceMap.values()){
+                    if(res.hasControl(key)) {
+                        SimProcessInfo info = new SimProcessInfo(processMap.get(key));
+                        accessManager.releaseResource(info, res.getID());
+                        res.releaseControl(info.getPid());
+                    }
+                }
                 Logger.log_cpu(String.format("Process %d complete and removed from system.", key));
                 String stats_key = String.format("Complete P%d", key);
                 Statistics.getStatLog().register(stats_key, cpu.getCycleCount());
