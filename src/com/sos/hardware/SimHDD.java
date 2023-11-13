@@ -12,6 +12,9 @@ package com.sos.hardware;
 import com.sos.bookkeeping.Logger;
 import com.sos.os.OSConstants;
 import com.sos.os.SimPage;
+import com.sos.os.SimProcessInfo;
+
+import java.util.ArrayList;
 
 public class SimHDD {
     //Singleton methods/variables
@@ -35,31 +38,40 @@ public class SimHDD {
     //Instance Variables
     private final int size;
     private final int pageSize;
-    private final Block[] blocks;
+    private final ArrayList<Block> blocks;
 
     private SimHDD(){
         size = OSConstants.driveSize;
         pageSize = OSConstants.pageSize;
-        blocks = new Block[size/pageSize];
+        blocks = new ArrayList<>();
     }
 
     public boolean store(SimPage page, int block){
-        if(block < 0 || block >= blocks.length)return false;
-        if(!blocks[block].free)
+        if(block < 0 || block >= blocks.size())return false;
+        if(!blocks.get(block).free)
             Logger.error_mem(String.format("Block %d overwritten while not free.", block));
-        blocks[block].contents = page;
-        blocks[block].contents.placed("DISK");
-        blocks[block].free = false;
+        blocks.get(block).contents = page;
+        blocks.get(block).contents.placed("DISK");
+        blocks.get(block).free = false;
         return true;
     }
 
+    public void addBlock(){
+        blocks.add(new Block());
+    }
+
+    public void addStoreBlock(SimPage page){
+        Block block = new Block(page);
+        blocks.add(block);
+    }
+
     public boolean free(int block){
-        if(block < 0 || block >= blocks.length)return false;
-        if(blocks[block].free)
+        if(block < 0 || block >= blocks.size())return false;
+        if(blocks.get(block).free)
             Logger.error_mem(String.format("Freed block %d which was empty.", block));
-        blocks[block].free = true;
-        if(blocks[block].contents != null && !blocks[block].contents.inRAM())
-            blocks[block].contents.placed("Nowhere");
+        blocks.get(block).free = true;
+        if(blocks.get(block).contents != null && !blocks.get(block).contents.inRAM())
+            blocks.get(block).contents.placed("Nowhere");
         return true;
     }
 
@@ -74,8 +86,8 @@ public class SimHDD {
     }
 
     public SimPage get(int block){
-        if(block < 0 || block > blocks.length)return null;
-        return blocks[block].contents;
+        if(block < 0 || block > blocks.size())return null;
+        return blocks.get(block).contents;
     }
 
     public SimPage find(int pid, int pagenum){
@@ -102,16 +114,21 @@ public class SimHDD {
     }
 
     public int getBlockCount(){
-        return blocks.length;
+        return blocks.size();
     }
 
-    private class Block {
+    private static class Block {
         public SimPage contents;
         public boolean free;
 
         public Block(){
             this.contents = null;
             this.free = true;
+        }
+
+        public Block(SimPage contents){
+            this.contents = contents;
+            this.free = false;
         }
     }
 }

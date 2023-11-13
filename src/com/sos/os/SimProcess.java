@@ -11,6 +11,7 @@
 package com.sos.os;
 
 import com.sos.bookkeeping.Logger;
+import com.sos.hardware.SimRAM;
 
 public class SimProcess {
     private final SimProgram baseProgram;
@@ -54,8 +55,9 @@ public class SimProcess {
             if (remainingCyclesOnInstr <= 0) {
                 partialInstr = false;
                 programInstruction = baseProgram.getInstr(programInstruction).getNextInstructionIndex();
-                if(!baseProgram.validInstr(programInstruction))
+                if(!baseProgram.validInstr(programInstruction)) {
                     state = SimProcessState.TERMINATED;
+                }
                 else
                     remainingCyclesOnInstr = baseProgram.getInstr(programInstruction).getCycleCount();
                 return (i + 1);

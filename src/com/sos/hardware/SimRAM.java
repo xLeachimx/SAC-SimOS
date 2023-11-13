@@ -90,7 +90,7 @@ public class SimRAM {
 
     public void freeAll(int pid){
         for(Frame frame : frames){
-            if(frame.contents.getPid() == pid){
+            if(frame.contents != null && frame.contents.getPid() == pid){
                 frame.free = true;
                 if(!frame.contents.onDisk())
                     frame.contents.placed("Nowhere");

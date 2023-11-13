@@ -14,6 +14,7 @@ import com.sos.bookkeeping.Logger;
 import com.sos.bookkeeping.Statistics;
 import com.sos.generator.CentralRandom;
 import com.sos.hardware.SimCPU;
+import com.sos.hardware.SimHDD;
 import com.sos.hardware.SimRAM;
 import com.sos.os.instructions.MemoryInstruction;
 import com.sos.os.instructions.ResourceInstruction;
@@ -151,6 +152,8 @@ public class SimOS {
         ArrayList<Integer> removals = new ArrayList<>();
         for(Integer key : processMap.keySet()){
             if(processMap.get(key).getState() == SimProcessState.TERMINATED){
+                SimRAM.getInstance().freeAll(key);
+                SimHDD.getInstance().freeAll(key);
                 for(SimResource res : resourceMap.values()){
                     if(res.hasControl(key)) {
                         SimProcessInfo info = new SimProcessInfo(processMap.get(key));

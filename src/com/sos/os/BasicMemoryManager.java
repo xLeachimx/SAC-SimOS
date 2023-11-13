@@ -15,7 +15,6 @@ import java.util.Random;
 
 public class BasicMemoryManager implements MemoryManager{
     public BasicMemoryManager(){}
-
     @Override
     public void writeRequest(SimProcessInfo info, int addr){
         SimRAM.getInstance().free(0);
