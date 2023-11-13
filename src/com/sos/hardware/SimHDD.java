@@ -62,6 +62,7 @@ public class SimHDD {
 
     public void addStoreBlock(SimPage page){
         Block block = new Block(page);
+        page.placed("DISK");
         blocks.add(block);
     }
 
