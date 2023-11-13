@@ -112,4 +112,8 @@ public class SimProcess {
         }
         return (new SimPage(address/OSConstants.pageSize, pid));
     }
+
+    public int pageCount(){
+        return pages.length;
+    }
 }

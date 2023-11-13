@@ -9,19 +9,43 @@
 
 package com.sos.os;
 
+import java.util.HashMap;
+
 public class BasicResourceManager implements AccessManager{
+    private static class MutexLock{
+        private boolean locked;
+        public MutexLock(){
+            locked = false;
+        }
+
+        public boolean acquire(){
+            if(locked) return false;
+            locked = true;
+            return true;
+        }
+
+        public void release(){
+            locked = false;
+        }
+    }
+
+    HashMap<Integer, MutexLock> locks;
+
+    public BasicResourceManager(){
+        locks = new HashMap<>();
+    }
     @Override
     public void addResource(int resource) {
-        return;
+        locks.put(resource, new MutexLock());
     }
 
     @Override
     public boolean requestResource(SimProcessInfo info, int resource, boolean write) {
-        return true;
+        return locks.get(resource).acquire();
     }
 
     @Override
     public void releaseResource(SimProcessInfo info, int resource) {
-        return;
+        locks.get(resource).release();
     }
 }

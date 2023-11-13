@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Progress bar and QoL improvements.">
+    <list default="true" id="f8a2a1a0-f240-4f95-86ec-7d0ae96fa965" name="Changes" comment="Hotfix for resource release problem">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/Simulator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/Simulator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicProcessScheduler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/hardware/SimHDD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/hardware/SimHDD.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/BasicResourceManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimOS.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProgram.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimResource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/sos/os/instructions/ResourceInstruction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/instructions/ResourceInstruction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/sos/os/SimProcessInfo.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +33,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2U024NuYP3Y33TXU5naGOj9nVhW" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -139,7 +139,14 @@
       <option name="project" value="LOCAL" />
       <updated>1694968766681</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Hotfix for resource release problem">
+      <created>1698719640656</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1698719640656</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -166,7 +173,8 @@
     <MESSAGE value="Finished and somewhat tested." />
     <MESSAGE value="Fixed execution error that skipped some resource instructions." />
     <MESSAGE value="Progress bar and QoL improvements." />
-    <option name="LAST_COMMIT_MESSAGE" value="Progress bar and QoL improvements." />
+    <MESSAGE value="Hotfix for resource release problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="Hotfix for resource release problem" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>

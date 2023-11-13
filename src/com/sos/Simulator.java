@@ -24,6 +24,7 @@ public class Simulator {
         Logger.limit(false, false, true);
         long rngSeed = System.currentTimeMillis();
         CentralRandom.getRNG(rngSeed);
+        System.out.println(rngSeed);
         Statistics.getStatLog();
         Statistics.getStatLog().register("RNG Seed", rngSeed);
         Logger.getLog();
@@ -42,7 +43,7 @@ public class Simulator {
         //Setup simulated operating system
         ProcessScheduler ps = new BasicProcessScheduler();
         MemoryManager mm = new BasicMemoryManager();
-        AccessManager am = new BasicResourceManager();
+        AccessManager am = new SolResourceManager();
         SimOS operatingSystem = new SimOS(ps, mm, am);
         //Run the operating system step by step
         int currentStep = 0;

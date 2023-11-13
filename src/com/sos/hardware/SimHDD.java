@@ -101,6 +101,10 @@ public class SimHDD {
         return pageSize;
     }
 
+    public int getBlockCount(){
+        return blocks.length;
+    }
+
     private class Block {
         public SimPage contents;
         public boolean free;
