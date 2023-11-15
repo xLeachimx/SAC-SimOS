@@ -114,14 +114,17 @@ public class SimOS {
         if(!SimRAM.getInstance().contains(info.getPid(), instr.getInstructionAddress()))
             Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
         memoryManager.readRequest(info, instr.getInstructionAddress());
+        performRead(info, instr.getInstructionAddress());
         if(instr instanceof MemoryInstruction memInstr){
             if(!SimRAM.getInstance().contains(info.getPid(), memInstr.getMemoryAddress()))
                 Logger.log_mem(String.format("Page fault for process %d.", info.getPid()));
             if(memInstr.isWrite()) {
                 memoryManager.writeRequest(info, memInstr.getMemoryAddress());
+                performWrite(info, memInstr.getMemoryAddress());
             }
             else{
                 memoryManager.readRequest(info, memInstr.getMemoryAddress());
+                performRead(info, memInstr.getMemoryAddress());
             }
         }
         else if(instr instanceof ResourceInstruction resInstr){
@@ -186,5 +189,21 @@ public class SimOS {
 
     public double getAvgWait(){
         return avgWait/processCount;
+    }
+
+    private void performRead(SimProcessInfo info, int addr){
+        int pageNum = info.getPageNum(addr);
+        if(!SimRAM.getInstance().contains(info.getPid(), addr))
+            Logger.error_mem(String.format("Process %d read from page %d, which is not in memory.", info.getPid(), pageNum));
+        SimPage page = SimRAM.getInstance().find(info.getPid(), pageNum);
+        page.read(addr);
+    }
+
+    private void performWrite(SimProcessInfo info, int addr){
+        int pageNum = info.getPageNum(addr);
+        if(!SimRAM.getInstance().contains(info.getPid(), addr))
+            Logger.error_mem(String.format("Process %d wrote to page %d, which is not in memory.", info.getPid(), pageNum));
+        SimPage page = SimRAM.getInstance().find(info.getPid(), pageNum);
+        page.write(addr);
     }
 }

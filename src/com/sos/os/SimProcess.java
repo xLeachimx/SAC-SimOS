@@ -112,7 +112,16 @@ public class SimProcess {
                     address, pid));
             return null;
         }
-        return (new SimPage(address/OSConstants.pageSize, pid));
+        return pages[address/OSConstants.pageSize];
+    }
+
+    public int getPageNum(int address){
+        if(address < 0 || address >= baseProgram.total_size()){
+            Logger.error_mem(String.format("Address %d is outside of the address space of process %d",
+                    address, pid));
+            return -1;
+        }
+        return address/OSConstants.pageSize;
     }
 
     public int pageCount(){

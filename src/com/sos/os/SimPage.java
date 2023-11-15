@@ -28,7 +28,7 @@ public class SimPage {
     }
 
     public boolean contains(int address){
-        return (address >= pageSize * pagenum) && (address < pagenum * (pagenum+1));
+        return (address >= pageSize * pagenum) && (address < pageSize * (pagenum+1));
     }
 
     public void write(int address){

@@ -40,6 +40,9 @@ public class SimProcessInfo {
     public SimPage getPage(int addr){
         return process.getPage(addr);
     }
+    public int getPageNum(int addr){
+        return process.getPageNum(addr);
+    }
     public int getPageCount(){
         return process.pageCount();
     }
