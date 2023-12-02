@@ -49,7 +49,8 @@ public class SimHDD {
     public boolean store(SimPage page, int block){
         if(block < 0 || block >= blocks.size())return false;
         if(!blocks.get(block).free)
-            Logger.error_mem(String.format("Block %d overwritten while not free.", block));
+            if(blocks.get(block).contents.getPid() != page.getPid() || blocks.get(block).contents.getPagenum() != page.getPagenum())
+                Logger.error_mem(String.format("Block %d overwritten while not free.", block));
         blocks.get(block).contents = page;
         blocks.get(block).contents.placed("DISK");
         blocks.get(block).free = false;
