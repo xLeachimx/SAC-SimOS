@@ -43,7 +43,7 @@ public class Simulator {
         //Setup simulated operating system
         ProcessScheduler ps = new BasicProcessScheduler();
         MemoryManager mm = new BasicMemoryManager();
-        AccessManager am = new SolResourceManager();
+        AccessManager am = new BasicResourceManager();
         SimOS operatingSystem = new SimOS(ps, mm, am);
         //Run the operating system step by step
         int currentStep = 0;

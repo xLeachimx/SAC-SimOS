@@ -88,6 +88,11 @@ public class SimRAM {
         return true;
     }
 
+    public boolean isFree(int frame){
+        if(frame < 0 || frame >= frames.length)return false;
+        return frames[frame].free;
+    }
+
     public void freeAll(int pid){
         for(Frame frame : frames){
             if(frame.contents != null && frame.contents.getPid() == pid){
@@ -101,7 +106,7 @@ public class SimRAM {
     public SimPage get(int frame){
         if(frame < 0 || frame > frames.length)return null;
         if(!frames[frame].contents.inRAM())
-            Logger.error_mem(String.format("Page in frame %d no in RAM.", frame));
+            Logger.error_mem(String.format("Page in frame %d not in RAM.", frame));
         if(frames[frame].free) {
             Logger.error_mem(String.format("Page in frame %d does not contain page.", frame));
             return null;

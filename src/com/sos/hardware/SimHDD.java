@@ -106,6 +106,14 @@ public class SimHDD {
         return null;
     }
 
+    public int whereIs(int pid, int pagenum){
+        for(int i = 0;i < blocks.size();i++){
+            if(!blocks.get(i).free && blocks.get(i).contents.getPid() == pid && blocks.get(i).contents.getPagenum() == pagenum)
+                return i;
+        }
+        return -1;
+    }
+
     public boolean contains(int pid, int address){
         for(Block block : blocks){
             if(!block.free && block.contents.getPid() == pid && block.contents.contains(address))return true;
